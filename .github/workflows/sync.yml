@@ -1,8 +1,8 @@
 name: Notion to Web Sync
 on:
   schedule:
-    - cron: '0 * * * *' # 每小时自动运行一次
-  workflow_dispatch: # 允许你手动点击按钮运行
+    - cron: '0 * * * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -21,46 +21,56 @@ jobs:
 
       - name: Update HTML with Data
         run: |
-          # 这是一个简化的脚本，将数据转为网页可见的格式
           python3 -c "
-          - name: Update HTML with Data
-        run: |
-          python3 -c "
-          import json
-          with open('data.json') as f:
-              data = json.load(f)
-          
-          cards = ''
-          for row in data['results']:
-              props = row['properties']
-              # 这里的名称必须和你 Notion 的列名完全一致
-              title = props['标题']['title'][0]['text']['content'] if props['标题']['title'] else '无标题'
-              cat = props['分类']['select']['name'] if props['分类']['select'] else '未分类'
-              status = props['状态']['select']['name'] if props['状态']['select'] else '未知'
-              url = props['来源链接']['url'] if props['来源链接']['url'] else '#'
-              thought = props['感想']['rich_text'][0]['text']['content'] if props['感想']['rich_text'] else '暂无感想'
+          import json, re
+          try:
+              with open('data.json') as f:
+                  data = json.load(f)
               
-              cards += f'''
-              <div class=\"card\">
-                  <span class=\"category\">{cat}</span>
-                  <div class=\"content\">
-                      <span class=\"status\">状态：{status}</span>
-                      <h3>{title}</h3>
-                      <div class=\"thought\">“{thought}”</div>
-                      <a href=\"{url}\" target=\"_blank\" class=\"link-btn\">查看原帖</a>
-                  </div>
+              cards = ''
+              for row in data.get('results', []):
+                  props = row.get('properties', {})
+                  
+                  # 提取字段，增加容错处理
+                  title = props['标题']['title'][0]['text']['content'] if props.get('标题') and props['标题']['title'] else '无标题'
+                  cat = props['分类']['select']['name'] if props.get('分类') and props['分类']['select'] else '未分类'
+                  status = props['状态']['select']['name'] if props.get('状态') and props['状态']['select'] else '待办'
+                  url = props['来源链接']['url'] if props.get('来源链接') and props['来源链接']['url'] else '#'
+                  
+                  # 感想字段处理
+                  thought_list = props.get('感想', {}).get('rich_text', [])
+                  thought = thought_list[0]['text']['content'] if thought_list else '尚未写下感想...'
+                  
+                  cards += f'''
+          <div class=\"card\">
+              <span class=\"category\">{cat}</span>
+              <div class=\"content\">
+                  <span class=\"status\">状态：{status}</span>
+                  <h3>{title}</h3>
+                  <div class=\"thought\">“{thought}”</div>
+                  <a href=\"{url}\" target=\"_blank\" class=\"link-btn\">查看原帖</a>
               </div>
-              '''
-          
-          # 读取模板并替换，实现覆盖更新而非追加
-          with open('index.html', 'r') as f:
-              html = f.read()
-          
-          # 核心修复：每次都找占位符替换
-          import re
-          new_content = f'<div class=\"grid\" id=\"content\">\n        {cards}\n    </div>'
-          new_html = re.sub(r'<div class=\"grid\" id=\"content\">.*?</div>', new_content, html, flags=re.DOTALL)
-          
-          with open('index.html', 'w') as f:
-              f.write(new_html)
+          </div>
+          '''
+              
+              with open('index.html', 'r', encoding='utf-8') as f:
+                  html = f.read()
+              
+              # 正则替换：找到 grid 容器并替换其内部内容
+              new_grid = f'<div class=\"grid\" id=\"content\">\\n        {cards}\\n    </div>'
+              new_html = re.sub(r'<div class=\"grid\" id=\"content\">.*?</div>', new_grid, html, flags=re.DOTALL)
+              
+              with open('index.html', 'w', encoding='utf-8') as f:
+                  f.write(new_html)
+          except Exception as e:
+              print(f'Error: {e}')
+              exit(1)
           "
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add index.html
+          git commit -m "Update collection from Notion" || exit 0
+          git push
