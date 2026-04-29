@@ -1,1 +1,1 @@
-# My---threads---collection
+# My-threads-collection
