@@ -22,59 +22,78 @@ jobs:
       - name: Update HTML with Data
         run: |
           python3 -c "
-          import json, re
+          import json, re, sys
           try:
-              with open('data.json') as f:
-                  data = json.load(f)
-              
+              # 1. 加载数据
+              try:
+                  with open('data.json', 'r', encoding='utf-8') as f:
+                      data = json.load(f)
+              except Exception as e:
+                  raise Exception(f'读取 data.json 失败: {str(e)}')
+
+              # 2. 提取卡片
               cards = ''
-              for row in data.get('results', []):
+              results = data.get('results', [])
+              if not results:
+                  cards = '<p>Notion 中暂无数据，请检查数据库是否已分享给集成或是否有内容。</p>'
+              
+              for row in results:
                   props = row.get('properties', {})
                   
-                  # 核心改进：全自动寻找列名，不再死磕具体的中文
-                  def get_val(p_name, p_type):
-                      # 找到包含该名称的列，不区分大小写
-                      target = next((v for k, v in props.items() if p_name in k), None)
-                      if not target: return None
-                      if p_type == 'title': return target['title'][0]['text']['content'] if target['title'] else None
-                      if p_type == 'select': return target['select']['name'] if target['select'] else None
-                      if p_type == 'url': return target['url']
-                      if p_type == 'text': return target['rich_text'][0]['text']['content'] if target['rich_text'] else None
+                  # 辅助函数：尝试匹配列名
+                  def find_prop(name_keywords):
+                      for k, v in props.items():
+                          if any(kw in k for kw in name_keywords):
+                              return v
                       return None
 
-                  title = get_val('标题', 'title') or get_val('Name', 'title') or '无标题'
-                  cat = get_val('分类', 'select') or '未分类'
-                  status = get_val('状态', 'select') or '待办'
-                  url = get_val('来源', 'url') or '#'
-                  thought = get_val('感想', 'text') or '尚未写下感想...'
-                  
+                  # 灵活抓取各个字段
+                  p_title = find_prop(['标题', 'Name', 'title'])
+                  p_cat = find_prop(['分类', 'Category', 'type'])
+                  p_status = find_prop(['状态', 'Status'])
+                  p_url = find_prop(['来源', 'Link', 'url'])
+                  p_thought = find_prop(['感想', 'Thought', '备注'])
+
+                  title = p_title['title'][0]['text']['content'] if p_title and p_title.get('title') else '无标题'
+                  cat = p_cat['select']['name'] if p_cat and p_cat.get('select') else '未分类'
+                  status = p_status['select']['name'] if p_status and p_status.get('select') else '待处理'
+                  url = p_url['url'] if p_url and p_url.get('url') else '#'
+                  thought = p_thought['rich_text'][0]['text']['content'] if p_thought and p_thought.get('rich_text') else '暂无感想'
+
                   cards += f'''
           <div class=\"card\">
               <span class=\"category\">{cat}</span>
               <div class=\"content\">
-                  <span class=\"status\">状态：{status}</span>
+                  <span class=\"status\">{status}</span>
                   <h3>{title}</h3>
                   <div class=\"thought\">“{thought}”</div>
                   <a href=\"{url}\" target=\"_blank\" class=\"link-btn\">查看原帖</a>
               </div>
           </div>
           '''
-              
+
+              # 3. 写入 HTML
               with open('index.html', 'r', encoding='utf-8') as f:
                   html = f.read()
               
-              # 更加稳健的占位符替换
-              if '<!-- DATA_PLACEHOLDER -->' in html:
-                  new_html = html.replace('<!-- DATA_PLACEHOLDER -->', cards)
-              else:
-                  new_grid = f'<div class=\"grid\" id=\"content\">\n        {cards}\n    </div>'
-                  new_html = re.sub(r'<div class=\"grid\" id=\"content\">.*?</div>', new_grid, html, flags=re.DOTALL)
+              # 稳健的占位符逻辑
+              pattern = r'<div class=\"grid\" id=\"content\">.*?</div>'
+              replacement = f'<div class=\"grid\" id=\"content\">\\n        {cards}\\n    </div>'
               
+              if re.search(pattern, html, flags=re.DOTALL):
+                  new_html = re.sub(pattern, replacement, html, flags=re.DOTALL)
+              else:
+                  # 如果找不到 grid，就强行插在 body 后面
+                  new_html = html.replace('<body>', f'<body>\\n    {replacement}')
+
               with open('index.html', 'w', encoding='utf-8') as f:
                   f.write(new_html)
+
           except Exception as e:
-              print(f'Error: {e}')
-              import traceback
-              traceback.print_exc()
-              exit(1)
+              # 终极招数：如果报错，把报错写进网页，让你能看到原因
+              error_msg = f'<div style=\"color:red;padding:20px;\">脚本运行出错: {str(e)}</div>'
+              with open('index.html', 'a', encoding='utf-8') as f:
+                  f.write(error_msg)
+              print(f'Critical Error: {e}')
+              sys.exit(1)
           "
