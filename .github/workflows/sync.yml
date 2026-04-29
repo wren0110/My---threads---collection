@@ -1,0 +1,49 @@
+name: Notion to Web Sync
+on:
+  schedule:
+    - cron: '0 * * * *' # 每小时自动运行一次
+  workflow_dispatch: # 允许你手动点击按钮运行
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Fetch Data from Notion
+        run: |
+          curl -X POST "https://api.notion.com/v1/databases/${{ secrets.NOTION_DATABASE_ID }}/query" \
+            -H "Authorization: Bearer ${{ secrets.NOTION_TOKEN }}" \
+            -H "Notion-Version: 2022-06-28" \
+            -H "Content-Type: application/json" \
+            --data '{}' > data.json
+
+      - name: Update HTML with Data
+        run: |
+          # 这是一个简化的脚本，将数据转为网页可见的格式
+          python3 -c "
+          import json
+          with open('data.json') as f:
+              data = json.load(f)
+          cards = ''
+          for row in data['results']:
+              title = row['properties']['标题']['title'][0]['text']['content']
+              cat = row['properties']['分类']['select']['name']
+              cards += f'<div class=\"card\"><span class=\"tag\">{cat}</span><h3>{title}</h3></div>'
+          
+          with open('index.html', 'r') as f:
+              html = f.read()
+          
+          new_html = html.replace('', cards)
+          with open('index.html', 'w') as f:
+              f.write(new_html)
+          "
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add index.html
+          git commit -m "Update collection from Notion" || exit 0
+          git push
