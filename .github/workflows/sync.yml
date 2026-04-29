@@ -31,15 +31,22 @@ jobs:
               for row in data.get('results', []):
                   props = row.get('properties', {})
                   
-                  # 提取字段，增加容错处理
-                  title = props['标题']['title'][0]['text']['content'] if props.get('标题') and props['标题']['title'] else '无标题'
-                  cat = props['分类']['select']['name'] if props.get('分类') and props['分类']['select'] else '未分类'
-                  status = props['状态']['select']['name'] if props.get('状态') and props['状态']['select'] else '待办'
-                  url = props['来源链接']['url'] if props.get('来源链接') and props['来源链接']['url'] else '#'
-                  
-                  # 感想字段处理
-                  thought_list = props.get('感想', {}).get('rich_text', [])
-                  thought = thought_list[0]['text']['content'] if thought_list else '尚未写下感想...'
+                  # 核心改进：全自动寻找列名，不再死磕具体的中文
+                  def get_val(p_name, p_type):
+                      # 找到包含该名称的列，不区分大小写
+                      target = next((v for k, v in props.items() if p_name in k), None)
+                      if not target: return None
+                      if p_type == 'title': return target['title'][0]['text']['content'] if target['title'] else None
+                      if p_type == 'select': return target['select']['name'] if target['select'] else None
+                      if p_type == 'url': return target['url']
+                      if p_type == 'text': return target['rich_text'][0]['text']['content'] if target['rich_text'] else None
+                      return None
+
+                  title = get_val('标题', 'title') or get_val('Name', 'title') or '无标题'
+                  cat = get_val('分类', 'select') or '未分类'
+                  status = get_val('状态', 'select') or '待办'
+                  url = get_val('来源', 'url') or '#'
+                  thought = get_val('感想', 'text') or '尚未写下感想...'
                   
                   cards += f'''
           <div class=\"card\">
@@ -56,21 +63,18 @@ jobs:
               with open('index.html', 'r', encoding='utf-8') as f:
                   html = f.read()
               
-              # 正则替换：找到 grid 容器并替换其内部内容
-              new_grid = f'<div class=\"grid\" id=\"content\">\\n        {cards}\\n    </div>'
-              new_html = re.sub(r'<div class=\"grid\" id=\"content\">.*?</div>', new_grid, html, flags=re.DOTALL)
+              # 更加稳健的占位符替换
+              if '<!-- DATA_PLACEHOLDER -->' in html:
+                  new_html = html.replace('<!-- DATA_PLACEHOLDER -->', cards)
+              else:
+                  new_grid = f'<div class=\"grid\" id=\"content\">\n        {cards}\n    </div>'
+                  new_html = re.sub(r'<div class=\"grid\" id=\"content\">.*?</div>', new_grid, html, flags=re.DOTALL)
               
               with open('index.html', 'w', encoding='utf-8') as f:
                   f.write(new_html)
           except Exception as e:
               print(f'Error: {e}')
+              import traceback
+              traceback.print_exc()
               exit(1)
           "
-
-      - name: Commit and Push
-        run: |
-          git config --global user.name 'GitHub Action'
-          git config --global user.email 'action@github.com'
-          git add index.html
-          git commit -m "Update collection from Notion" || exit 0
-          git push
