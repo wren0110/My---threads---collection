@@ -3,83 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Threads 灵感收集箱</title>
+    <title>My Threads Collection</title>
     <style>
-        :root { --bg: #f0f2f5; --card: #ffffff; --primary: #000000; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #1c1e21; }
-        h1 { text-align: center; font-weight: 800; letter-spacing: -1px; margin-bottom: 40px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
-        .card { background: var(--card); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.2s; position: relative; border: 1px solid #e1e4e8; }
-        .card:hover { transform: translateY(-5px); }
-        .category { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7); color: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-        .content { padding: 20px; }
-        .status { font-size: 12px; color: #65676b; margin-bottom: 8px; display: block; }
-        h3 { margin: 0 0 12px 0; font-size: 18px; line-height: 1.4; }
-        .thought { background: #f8f9fa; padding: 12px; border-left: 4px solid #ddd; font-size: 14px; font-style: italic; color: #4b4b4b; margin-bottom: 15px; }
-        .link-btn { display: inline-block; background: var(--primary); color: white; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f0f2f5; padding: 20px; margin: 0; }
+        h1 { text-align: center; color: #1c1e21; margin-bottom: 30px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative; }
+        .card img { width: 100%; height: 180px; object-fit: cover; display: block; }
+        .content { padding: 16px; }
+        .category { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; }
+        .status { font-size: 12px; color: #65676b; margin-bottom: 8px; }
+        h3 { margin: 0 0 10px 0; font-size: 16px; color: #1c1e21; line-height: 1.4; }
+        .thought { background: #f8f9fa; padding: 10px; font-size: 13px; color: #4b4b4b; margin-bottom: 15px; border-left: 3px solid #ddd; font-style: italic; }
+        .link-btn { display: inline-block; background: #000; color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 12px; font-weight: 600; }
     </style>
 </head>
 <body>
     <h1>My Threads Collection</h1>
-    <div class="grid" id="content">
-
-            <div class="card" style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; border: 1px solid #e1e4e8; transition: transform 0.2s;">
-                <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/766a86bb-2232-8118-841b-000331588438/d75b8843-d227-4152-ad21-572b873f3337/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666OBREWEN%2F20260502%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260502T080451Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEG8aCXVzLXdlc3QtMiJHMEUCIA8ngLrSMFY2EzsJxObPVg6HJ5HshzRb7sLROGQB8d2QAiEAnmb9NBR%2FAkyHdlGSIvNEZ35JxhWgAtSsRWJcmasUx0gq%2FwMIOBAAGgw2Mzc0MjMxODM4MDUiDAnZpnIYpEj8c%2FGxPircA%2F4hSYso5gkXHo3skQRJY8r3h2q3%2B2EivqXu6J915UzopcwzMkt1%2F5TpEmPtsA01BxvxvIsocF4xeKFflXIE5LKh8N51oWtXdiBJAy8VNseSAfVg%2B%2Fr9Pg803d6BoQ4%2FCOPJHNompDkZe%2BbeocUeXToY%2B%2BJGhQ9QgD%2BxOsxWr9Z0UORsaLlzkM2MNElO%2BTPVKqR1qjHcksi1h80ApknCyMFBKCfNXnlEuWaO6Igyg5lSGU7bcijC2UOPPAVWILMc2SqSyUC7vCRjBJ5lE0tS7xi2IPiu%2ByYUss4S9Wk09X88aH94wakfGiy5b0iiJIzIB0Un14XSmG4ykEOkZ5kkQ3t98jSWDQ3bAs93r9k%2F%2FIt5vKbNFIK7yu8hB%2BdI6dzZDrO2x6qi4EmUvDhKJoZpFJv8ymqEK9as2wTG377aYURnvd%2BgeQg%2BXUvf1AcQFzSqYCRkylpo%2FnEzpATqb6Z3Gou26rKfV4a8gqgd8LglWu4%2BuflkPcnwRDuHlpRy4U%2FqzJbXEoZGikAoVKsG%2FCru23s251SGPE7ZXfPVA0pqKpHIXhVA8O7ELg%2Fnbkqs6rl7NF8Aam13HLwUfEqps%2FvElL1%2BJaWgCEFkSyDLpBcpColwv%2BVeBqQo9EHZBLyJMN7I1s8GOqUBJpngerNdfOH66xnfSVPpzVYKDj0pAK%2BgMpvS7n%2F0d6P%2Bk3TRDkHZwnu4ULYKsC8BR40m94vsqKE3FRwNx%2FYaJjkDH5rWdNQucUT9bhvEYtl9vbOWlMDqmxrZNZ6uGxHpoYu1sB8oshAshIGTMLEdoxEQ4EaW4Sau4BWgTZEoZGvZPnQSaoh3lHx1ZwvxVHx5E5wqURk%2FJ7sBmv2v6LL6tJlGZUli&X-Amz-Signature=424862a406fedc99a4c5c76eba38e01499596c40b5bd6d02b87d477d9949bb02&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject" style="width:100%; height:200px; object-fit:cover; display:block; border-bottom:1px solid #eee;">
-                <div class="content" style="padding: 20px;">
-                    <span style="position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7); color: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; z-index: 10;">书籍</span>
-                    <span style="font-size: 12px; color: #65676b; display: block; margin-bottom: 8px;">状态：未开始</span>
-                    <h3 style="margin: 0 0 12px 0; font-size: 18px; line-height: 1.4;">《少年凯歌》</h3>
-                    <div style="background: #f8f9fa; padding: 12px; border-left: 4px solid #ddd; font-size: 14px; font-style: italic; color: #4b4b4b; margin-bottom: 15px;">“暂无感想”</div>
-                    <a href="https://www.threads.com/@moranfire4/post/DXoGD78GgDD?xmt=AQF0ouyMceybEmnhoDZHfbWwBm6tkYkH1svs9IbyNs_4pQ" target="_blank" style="display: inline-block; background: #000; color: white; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;">查看原帖</a>
+    <div class="grid">
+        
+                <div class="card">
+                    <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/766a86bb-2232-8118-841b-000331588438/d75b8843-d227-4152-ad21-572b873f3337/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TYXLIAQ4%2F20260502%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260502T084331Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDd%2B2hwEqNWvD5ZB%2Bluo%2FDrcYQqqCahoYM7gQyFyyZGwQIgfGRXdPgZOY%2FAzZYzmLPZSoT4Q30drKX8tPsRdE4JMrcq%2FwMIORAAGgw2Mzc0MjMxODM4MDUiDJc2P%2Fd%2FyF0NO%2F3MFircA0%2FwLP93YiZC3JSInFjxZDa1W5Zmj2IfXybfGh1AU93AYqAkeISxLSln%2Bv9DmWpcjMWVzEx06pKWds63JQhEtvsV2pj6VyapxhHMq%2BVcOcp0D1LLnDGSZR1rMb4srh1g7Ice18ak6WatjWD0ZKJh2ElJdwThjGUyBws2j3cJxxBKRlFEyabkPn%2F8yETQCKvnSbtaoUG5MQ%2BRU41VqTtTBHoFP0papz5j3Fcc4Yiq2pbRDO9Rb0HvJFm%2Fsjbspm1%2BbHI%2BKuD9K1Ku6CyK7eaXcPt1BXl2WYc6utQ1jf876XUx0XI3Nn3csSvzy1mxtX%2BroQ8JZUrkx0h1cSppKqY3cPrluUS2iBCAcvlP6HgRW68pAHhOpeITRiAW8SPqRm4OOstbACO%2Fj2a%2BwoYRqWXJq%2B6XxhTM9KsuwqkTLLViIu4%2FqgYR%2FmM%2B2g7tnn60jW9FwdnNZxkr6RuYJABFwVd4RhJJ2pEkSS8yxrjc%2B9mD5Rn%2FMguGXdlr9NuZF7PPTPMZzYzrppzTkYlu6fQpj9j6R3m6%2BZ9NpyjfCkQqJ6uhHZqIA5sqCyaDWNUqQYymoFvYIZzT3%2BJlpZfQR3SzSbd65PmHggMh5pR3uuD0s%2Bvmj8oM8qywC4W7VBe0MCLtMOHo1s8GOqUBfHvCCSwIUaoyuS8XaFSp56oYje8q%2Fw2OLXi4llMCq%2FjH5jolXgI1vN27dP0EIO0WYQeKIZNthVO9Qd4I460mrE%2BjemsVLm3RqEGAgXQ75VXUzOYNpPORGUUpKF8xNKurvupqU1dRBRC8O4pXFyumbxI5PfevI8L4tohlCaOzrlNeTixCBZLdIV7KgnCAwjcF03cX%2FIZuNZFI7r2rVzOdGDuMFWEl&X-Amz-Signature=e928aba2762e973d3fbb37ff8e98dc96467c57fa06e008ed0c8f76d20b0e0ba4&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject">
+                    <div class="content">
+                        <span class="category">书籍</span>
+                        <div class="status">状态：未开始</div>
+                        <h3>《少年凯歌》</h3>
+                        <div class="thought">“暂无感想”</div>
+                        <a href="https://www.threads.com/@moranfire4/post/DXoGD78GgDD?xmt=AQF0ouyMceybEmnhoDZHfbWwBm6tkYkH1svs9IbyNs_4pQ" target="_blank" class="link-btn">查看原帖</a>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="card" style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; border: 1px solid #e1e4e8; transition: transform 0.2s;">
-                <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/766a86bb-2232-8118-841b-000331588438/ac05dc0b-9016-4a82-b5ce-5576d3887ee9/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666OBREWEN%2F20260502%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260502T080451Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEG8aCXVzLXdlc3QtMiJHMEUCIA8ngLrSMFY2EzsJxObPVg6HJ5HshzRb7sLROGQB8d2QAiEAnmb9NBR%2FAkyHdlGSIvNEZ35JxhWgAtSsRWJcmasUx0gq%2FwMIOBAAGgw2Mzc0MjMxODM4MDUiDAnZpnIYpEj8c%2FGxPircA%2F4hSYso5gkXHo3skQRJY8r3h2q3%2B2EivqXu6J915UzopcwzMkt1%2F5TpEmPtsA01BxvxvIsocF4xeKFflXIE5LKh8N51oWtXdiBJAy8VNseSAfVg%2B%2Fr9Pg803d6BoQ4%2FCOPJHNompDkZe%2BbeocUeXToY%2B%2BJGhQ9QgD%2BxOsxWr9Z0UORsaLlzkM2MNElO%2BTPVKqR1qjHcksi1h80ApknCyMFBKCfNXnlEuWaO6Igyg5lSGU7bcijC2UOPPAVWILMc2SqSyUC7vCRjBJ5lE0tS7xi2IPiu%2ByYUss4S9Wk09X88aH94wakfGiy5b0iiJIzIB0Un14XSmG4ykEOkZ5kkQ3t98jSWDQ3bAs93r9k%2F%2FIt5vKbNFIK7yu8hB%2BdI6dzZDrO2x6qi4EmUvDhKJoZpFJv8ymqEK9as2wTG377aYURnvd%2BgeQg%2BXUvf1AcQFzSqYCRkylpo%2FnEzpATqb6Z3Gou26rKfV4a8gqgd8LglWu4%2BuflkPcnwRDuHlpRy4U%2FqzJbXEoZGikAoVKsG%2FCru23s251SGPE7ZXfPVA0pqKpHIXhVA8O7ELg%2Fnbkqs6rl7NF8Aam13HLwUfEqps%2FvElL1%2BJaWgCEFkSyDLpBcpColwv%2BVeBqQo9EHZBLyJMN7I1s8GOqUBJpngerNdfOH66xnfSVPpzVYKDj0pAK%2BgMpvS7n%2F0d6P%2Bk3TRDkHZwnu4ULYKsC8BR40m94vsqKE3FRwNx%2FYaJjkDH5rWdNQucUT9bhvEYtl9vbOWlMDqmxrZNZ6uGxHpoYu1sB8oshAshIGTMLEdoxEQ4EaW4Sau4BWgTZEoZGvZPnQSaoh3lHx1ZwvxVHx5E5wqURk%2FJ7sBmv2v6LL6tJlGZUli&X-Amz-Signature=4915519d6188f231312576c44efccb610b5022abd9d8b645571d4ef5b9639b83&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject" style="width:100%; height:200px; object-fit:cover; display:block; border-bottom:1px solid #eee;">
-                <div class="content" style="padding: 20px;">
-                    <span style="position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7); color: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; z-index: 10;">城市彩蛋</span>
-                    <span style="font-size: 12px; color: #65676b; display: block; margin-bottom: 8px;">状态：完成</span>
-                    <h3 style="margin: 0 0 12px 0; font-size: 18px; line-height: 1.4;">成都折角书店</h3>
-                    <div style="background: #f8f9fa; padding: 12px; border-left: 4px solid #ddd; font-size: 14px; font-style: italic; color: #4b4b4b; margin-bottom: 15px;">“靠着选书和大冰箱，店主就这么撑起淡淡的逼格”</div>
-                    <a href="https://www.threads.com/@garr.y/post/DXL0ovGFNGw?xmt=AQF0WiRlsC6NgG69Jz79msFb1nZEULlyisHYhaT9Bh43Ew" target="_blank" style="display: inline-block; background: #000; color: white; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;">查看原帖</a>
+                
+                <div class="card">
+                    <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/766a86bb-2232-8118-841b-000331588438/ac05dc0b-9016-4a82-b5ce-5576d3887ee9/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TYXLIAQ4%2F20260502%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260502T084331Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDd%2B2hwEqNWvD5ZB%2Bluo%2FDrcYQqqCahoYM7gQyFyyZGwQIgfGRXdPgZOY%2FAzZYzmLPZSoT4Q30drKX8tPsRdE4JMrcq%2FwMIORAAGgw2Mzc0MjMxODM4MDUiDJc2P%2Fd%2FyF0NO%2F3MFircA0%2FwLP93YiZC3JSInFjxZDa1W5Zmj2IfXybfGh1AU93AYqAkeISxLSln%2Bv9DmWpcjMWVzEx06pKWds63JQhEtvsV2pj6VyapxhHMq%2BVcOcp0D1LLnDGSZR1rMb4srh1g7Ice18ak6WatjWD0ZKJh2ElJdwThjGUyBws2j3cJxxBKRlFEyabkPn%2F8yETQCKvnSbtaoUG5MQ%2BRU41VqTtTBHoFP0papz5j3Fcc4Yiq2pbRDO9Rb0HvJFm%2Fsjbspm1%2BbHI%2BKuD9K1Ku6CyK7eaXcPt1BXl2WYc6utQ1jf876XUx0XI3Nn3csSvzy1mxtX%2BroQ8JZUrkx0h1cSppKqY3cPrluUS2iBCAcvlP6HgRW68pAHhOpeITRiAW8SPqRm4OOstbACO%2Fj2a%2BwoYRqWXJq%2B6XxhTM9KsuwqkTLLViIu4%2FqgYR%2FmM%2B2g7tnn60jW9FwdnNZxkr6RuYJABFwVd4RhJJ2pEkSS8yxrjc%2B9mD5Rn%2FMguGXdlr9NuZF7PPTPMZzYzrppzTkYlu6fQpj9j6R3m6%2BZ9NpyjfCkQqJ6uhHZqIA5sqCyaDWNUqQYymoFvYIZzT3%2BJlpZfQR3SzSbd65PmHggMh5pR3uuD0s%2Bvmj8oM8qywC4W7VBe0MCLtMOHo1s8GOqUBfHvCCSwIUaoyuS8XaFSp56oYje8q%2Fw2OLXi4llMCq%2FjH5jolXgI1vN27dP0EIO0WYQeKIZNthVO9Qd4I460mrE%2BjemsVLm3RqEGAgXQ75VXUzOYNpPORGUUpKF8xNKurvupqU1dRBRC8O4pXFyumbxI5PfevI8L4tohlCaOzrlNeTixCBZLdIV7KgnCAwjcF03cX%2FIZuNZFI7r2rVzOdGDuMFWEl&X-Amz-Signature=92d94fd0aa73a510bb070449d364ebb1a4272b31fe3a23efad56ca7f8df9b4c6&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject">
+                    <div class="content">
+                        <span class="category">城市彩蛋</span>
+                        <div class="status">状态：完成</div>
+                        <h3>成都折角书店</h3>
+                        <div class="thought">“靠着选书和大冰箱，店主就这么撑起淡淡的逼格”</div>
+                        <a href="https://www.threads.com/@garr.y/post/DXL0ovGFNGw?xmt=AQF0WiRlsC6NgG69Jz79msFb1nZEULlyisHYhaT9Bh43Ew" target="_blank" class="link-btn">查看原帖</a>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="card" style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; border: 1px solid #e1e4e8; transition: transform 0.2s;">
-                <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/766a86bb-2232-8118-841b-000331588438/24ca9fcf-5e2f-48f0-b62d-4800064a737e/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4666OBREWEN%2F20260502%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260502T080451Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEG8aCXVzLXdlc3QtMiJHMEUCIA8ngLrSMFY2EzsJxObPVg6HJ5HshzRb7sLROGQB8d2QAiEAnmb9NBR%2FAkyHdlGSIvNEZ35JxhWgAtSsRWJcmasUx0gq%2FwMIOBAAGgw2Mzc0MjMxODM4MDUiDAnZpnIYpEj8c%2FGxPircA%2F4hSYso5gkXHo3skQRJY8r3h2q3%2B2EivqXu6J915UzopcwzMkt1%2F5TpEmPtsA01BxvxvIsocF4xeKFflXIE5LKh8N51oWtXdiBJAy8VNseSAfVg%2B%2Fr9Pg803d6BoQ4%2FCOPJHNompDkZe%2BbeocUeXToY%2B%2BJGhQ9QgD%2BxOsxWr9Z0UORsaLlzkM2MNElO%2BTPVKqR1qjHcksi1h80ApknCyMFBKCfNXnlEuWaO6Igyg5lSGU7bcijC2UOPPAVWILMc2SqSyUC7vCRjBJ5lE0tS7xi2IPiu%2ByYUss4S9Wk09X88aH94wakfGiy5b0iiJIzIB0Un14XSmG4ykEOkZ5kkQ3t98jSWDQ3bAs93r9k%2F%2FIt5vKbNFIK7yu8hB%2BdI6dzZDrO2x6qi4EmUvDhKJoZpFJv8ymqEK9as2wTG377aYURnvd%2BgeQg%2BXUvf1AcQFzSqYCRkylpo%2FnEzpATqb6Z3Gou26rKfV4a8gqgd8LglWu4%2BuflkPcnwRDuHlpRy4U%2FqzJbXEoZGikAoVKsG%2FCru23s251SGPE7ZXfPVA0pqKpHIXhVA8O7ELg%2Fnbkqs6rl7NF8Aam13HLwUfEqps%2FvElL1%2BJaWgCEFkSyDLpBcpColwv%2BVeBqQo9EHZBLyJMN7I1s8GOqUBJpngerNdfOH66xnfSVPpzVYKDj0pAK%2BgMpvS7n%2F0d6P%2Bk3TRDkHZwnu4ULYKsC8BR40m94vsqKE3FRwNx%2FYaJjkDH5rWdNQucUT9bhvEYtl9vbOWlMDqmxrZNZ6uGxHpoYu1sB8oshAshIGTMLEdoxEQ4EaW4Sau4BWgTZEoZGvZPnQSaoh3lHx1ZwvxVHx5E5wqURk%2FJ7sBmv2v6LL6tJlGZUli&X-Amz-Signature=8cf170f9e593f99179137095f94bf2308c6e0b38fc857e61559d90a4920ea10a&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject" style="width:100%; height:200px; object-fit:cover; display:block; border-bottom:1px solid #eee;">
-                <div class="content" style="padding: 20px;">
-                    <span style="position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7); color: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; z-index: 10;">生活技巧</span>
-                    <span style="font-size: 12px; color: #65676b; display: block; margin-bottom: 8px;">状态：未开始</span>
-                    <h3 style="margin: 0 0 12px 0; font-size: 18px; line-height: 1.4;">花色袜子：最完美的白袜平替</h3>
-                    <div style="background: #f8f9fa; padding: 12px; border-left: 4px solid #ddd; font-size: 14px; font-style: italic; color: #4b4b4b; margin-bottom: 15px;">“暂无感想”</div>
-                    <a href="https://www.threads.com/@jinjiwoo48/post/DXmNtmHD8NV?xmt=AQF0WiRlsC6NgG69Jz79msFb1nZEULlyisHYhaT9Bh43Ew" target="_blank" style="display: inline-block; background: #000; color: white; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;">查看原帖</a>
+                
+                <div class="card">
+                    <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/766a86bb-2232-8118-841b-000331588438/24ca9fcf-5e2f-48f0-b62d-4800064a737e/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466TYXLIAQ4%2F20260502%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260502T084331Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHEaCXVzLXdlc3QtMiJHMEUCIQDd%2B2hwEqNWvD5ZB%2Bluo%2FDrcYQqqCahoYM7gQyFyyZGwQIgfGRXdPgZOY%2FAzZYzmLPZSoT4Q30drKX8tPsRdE4JMrcq%2FwMIORAAGgw2Mzc0MjMxODM4MDUiDJc2P%2Fd%2FyF0NO%2F3MFircA0%2FwLP93YiZC3JSInFjxZDa1W5Zmj2IfXybfGh1AU93AYqAkeISxLSln%2Bv9DmWpcjMWVzEx06pKWds63JQhEtvsV2pj6VyapxhHMq%2BVcOcp0D1LLnDGSZR1rMb4srh1g7Ice18ak6WatjWD0ZKJh2ElJdwThjGUyBws2j3cJxxBKRlFEyabkPn%2F8yETQCKvnSbtaoUG5MQ%2BRU41VqTtTBHoFP0papz5j3Fcc4Yiq2pbRDO9Rb0HvJFm%2Fsjbspm1%2BbHI%2BKuD9K1Ku6CyK7eaXcPt1BXl2WYc6utQ1jf876XUx0XI3Nn3csSvzy1mxtX%2BroQ8JZUrkx0h1cSppKqY3cPrluUS2iBCAcvlP6HgRW68pAHhOpeITRiAW8SPqRm4OOstbACO%2Fj2a%2BwoYRqWXJq%2B6XxhTM9KsuwqkTLLViIu4%2FqgYR%2FmM%2B2g7tnn60jW9FwdnNZxkr6RuYJABFwVd4RhJJ2pEkSS8yxrjc%2B9mD5Rn%2FMguGXdlr9NuZF7PPTPMZzYzrppzTkYlu6fQpj9j6R3m6%2BZ9NpyjfCkQqJ6uhHZqIA5sqCyaDWNUqQYymoFvYIZzT3%2BJlpZfQR3SzSbd65PmHggMh5pR3uuD0s%2Bvmj8oM8qywC4W7VBe0MCLtMOHo1s8GOqUBfHvCCSwIUaoyuS8XaFSp56oYje8q%2Fw2OLXi4llMCq%2FjH5jolXgI1vN27dP0EIO0WYQeKIZNthVO9Qd4I460mrE%2BjemsVLm3RqEGAgXQ75VXUzOYNpPORGUUpKF8xNKurvupqU1dRBRC8O4pXFyumbxI5PfevI8L4tohlCaOzrlNeTixCBZLdIV7KgnCAwjcF03cX%2FIZuNZFI7r2rVzOdGDuMFWEl&X-Amz-Signature=a7a53fd98d082ff4f8486b72b821ebbea7aa4bd4f99e6ed39b3b7abc65434d71&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject">
+                    <div class="content">
+                        <span class="category">生活技巧</span>
+                        <div class="status">状态：未开始</div>
+                        <h3>花色袜子：最完美的白袜平替</h3>
+                        <div class="thought">“暂无感想”</div>
+                        <a href="https://www.threads.com/@jinjiwoo48/post/DXmNtmHD8NV?xmt=AQF0WiRlsC6NgG69Jz79msFb1nZEULlyisHYhaT9Bh43Ew" target="_blank" class="link-btn">查看原帖</a>
+                    </div>
                 </div>
-            </div>
-            
-</div>
-            
-            <div class="card" style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; border: 1px solid #e1e4e8; transition: transform 0.2s;">
-                <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/766a86bb-2232-8118-841b-000331588438/ac05dc0b-9016-4a82-b5ce-5576d3887ee9/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VCA7FPHF%2F20260502%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260502T074455Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEG8aCXVzLXdlc3QtMiJGMEQCIG%2FrIwISKlM2Vck0Jn3V1b4eVSa7jFYFNLYA5%2Bo7q4CeAiBtUsZQtMlQv9IhA%2B2KSRP78mRqiwVjGssq%2BWSwdWamryr%2FAwg4EAAaDDYzNzQyMzE4MzgwNSIM3HRBJnpQg5xJj2D3KtwDlDvXbHISxn96QyVuorTFcOgvfnFzkX5ZAnigPFHFY1atkuazOBrGw3XnzGxtnL8tTeLe4I3gkVGS8D63V2Icevgay7p31DAkk9PjELnoG1MOx54yMPsI1DgJgqzjs7qI3lIXPS9MwdRxI%2FG6p1eYJ%2BRhA01%2BVQwU72BN0hnkcu3bPPBtVlCn%2FuXM1Kh6KmioWDg7Ki6aB3VpPJRy5Ty5d5e%2Bs6uFSjwCX61nmpxX%2FSmG5RdHhEmCiPTY9CV5KloX3Cse0NgCk7EBfKNoKE%2B%2BWuACMZOOYCUVIEVXMC9ptfcsg0%2FxvKXxDpSxO0DPaUNkzrIbiz8uKPrFP6qJGS7tra%2FVDmnLp0OojgkrwKK7my%2FIhvwIAUs7yCAgdvnYaMQyZfy%2BHI%2FGKYyUlYipJvKP%2FGmf58AC7K5GHR5Cv5JGWb5hk9dLI%2BwMCnVUT5GfwJGbaXHfoqIL1fhnea8kTGy5C%2Bj%2BlvBPB6J4ZCV7dEg2v%2FBjrqnZ1sFHBdObIRQ8c7wQ6V6gh5eZkAfrLx2HGJxr%2FHj2Mn7dn5Lof2y7qZHS5Y7Zh21Ezdzs0D6qwKrne5r%2FbazZKYwLo2ATQdU6JdzvtC0htZ%2BJVql7ytfIuveeOK8RwlXtyz1Khbr2ZmQw4MjWzwY6pgFjYC13L6o3F1GJ2HffiFSXvUsKB6FSXsnk2dT%2BtRUZDoXA7F1OoI96mMrSdQeNPGuko%2BqhK6QFy5lI%2F%2Bn5kJYZa5tHT06T8c1ewQUpVe6%2FoXqyhQswIbwqAQd3K6dgQFCFpQzfcBlAkdjaTVm8nvWLBzXb5MVE3g0lNNbD4K7UnDYXjnCioceBq02UTUCPIk8sWAxBw5GuTlJOISy1oi%2B6SAkGKH1L&X-Amz-Signature=dcd40c8ff03185a6a63826a7950402779d5bc413a031106f555c93e887a12597&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject" style="width:100%; height:200px; object-fit:cover; display:block; border-bottom:1px solid #eee;">
-                <div class="content" style="padding: 20px;">
-                    <span style="position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7); color: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; z-index: 10;">城市彩蛋</span>
-                    <span style="font-size: 12px; color: #65676b; display: block; margin-bottom: 8px;">状态：完成</span>
-                    <h3 style="margin: 0 0 12px 0; font-size: 18px; line-height: 1.4;">成都折角书店</h3>
-                    <div style="background: #f8f9fa; padding: 12px; border-left: 4px solid #ddd; font-size: 14px; font-style: italic; color: #4b4b4b; margin-bottom: 15px;">“暂无感想”</div>
-                    <a href="https://www.threads.com/@garr.y/post/DXL0ovGFNGw?xmt=AQF0WiRlsC6NgG69Jz79msFb1nZEULlyisHYhaT9Bh43Ew" target="_blank" style="display: inline-block; background: #000; color: white; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;">查看原帖</a>
-                </div>
-            </div>
-            
-            <div class="card" style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; border: 1px solid #e1e4e8; transition: transform 0.2s;">
-                <img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/766a86bb-2232-8118-841b-000331588438/24ca9fcf-5e2f-48f0-b62d-4800064a737e/image.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB466VCA7FPHF%2F20260502%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260502T074455Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEG8aCXVzLXdlc3QtMiJGMEQCIG%2FrIwISKlM2Vck0Jn3V1b4eVSa7jFYFNLYA5%2Bo7q4CeAiBtUsZQtMlQv9IhA%2B2KSRP78mRqiwVjGssq%2BWSwdWamryr%2FAwg4EAAaDDYzNzQyMzE4MzgwNSIM3HRBJnpQg5xJj2D3KtwDlDvXbHISxn96QyVuorTFcOgvfnFzkX5ZAnigPFHFY1atkuazOBrGw3XnzGxtnL8tTeLe4I3gkVGS8D63V2Icevgay7p31DAkk9PjELnoG1MOx54yMPsI1DgJgqzjs7qI3lIXPS9MwdRxI%2FG6p1eYJ%2BRhA01%2BVQwU72BN0hnkcu3bPPBtVlCn%2FuXM1Kh6KmioWDg7Ki6aB3VpPJRy5Ty5d5e%2Bs6uFSjwCX61nmpxX%2FSmG5RdHhEmCiPTY9CV5KloX3Cse0NgCk7EBfKNoKE%2B%2BWuACMZOOYCUVIEVXMC9ptfcsg0%2FxvKXxDpSxO0DPaUNkzrIbiz8uKPrFP6qJGS7tra%2FVDmnLp0OojgkrwKK7my%2FIhvwIAUs7yCAgdvnYaMQyZfy%2BHI%2FGKYyUlYipJvKP%2FGmf58AC7K5GHR5Cv5JGWb5hk9dLI%2BwMCnVUT5GfwJGbaXHfoqIL1fhnea8kTGy5C%2Bj%2BlvBPB6J4ZCV7dEg2v%2FBjrqnZ1sFHBdObIRQ8c7wQ6V6gh5eZkAfrLx2HGJxr%2FHj2Mn7dn5Lof2y7qZHS5Y7Zh21Ezdzs0D6qwKrne5r%2FbazZKYwLo2ATQdU6JdzvtC0htZ%2BJVql7ytfIuveeOK8RwlXtyz1Khbr2ZmQw4MjWzwY6pgFjYC13L6o3F1GJ2HffiFSXvUsKB6FSXsnk2dT%2BtRUZDoXA7F1OoI96mMrSdQeNPGuko%2BqhK6QFy5lI%2F%2Bn5kJYZa5tHT06T8c1ewQUpVe6%2FoXqyhQswIbwqAQd3K6dgQFCFpQzfcBlAkdjaTVm8nvWLBzXb5MVE3g0lNNbD4K7UnDYXjnCioceBq02UTUCPIk8sWAxBw5GuTlJOISy1oi%2B6SAkGKH1L&X-Amz-Signature=240aad24a8d434f935c54c84961e57df854935e82171f4cdb2f14c9d4cace976&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject" style="width:100%; height:200px; object-fit:cover; display:block; border-bottom:1px solid #eee;">
-                <div class="content" style="padding: 20px;">
-                    <span style="position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7); color: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; z-index: 10;">生活技巧</span>
-                    <span style="font-size: 12px; color: #65676b; display: block; margin-bottom: 8px;">状态：未开始</span>
-                    <h3 style="margin: 0 0 12px 0; font-size: 18px; line-height: 1.4;">花色袜子：最完美的白袜平替</h3>
-                    <div style="background: #f8f9fa; padding: 12px; border-left: 4px solid #ddd; font-size: 14px; font-style: italic; color: #4b4b4b; margin-bottom: 15px;">“暂无感想”</div>
-                    <a href="https://www.threads.com/@jinjiwoo48/post/DXmNtmHD8NV?xmt=AQF0WiRlsC6NgG69Jz79msFb1nZEULlyisHYhaT9Bh43Ew" target="_blank" style="display: inline-block; background: #000; color: white; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;">查看原帖</a>
-                </div>
-            </div>
-            
-</div><div class="card"><h3>成都折角书店</h3><p>数据已抓取，等待详细排版</p></div><div class="card"><h3>花色袜子：最完美的白袜平替</h3><p>数据已抓取，等待详细排版</p></div></div>
+                
+    </div>
 </body>
 </html>
