@@ -21,64 +21,23 @@ jobs:
 
       - name: Update HTML with Data
         run: |
-          python3 -c "
-          import json, re, sys
+         python3 -c "
+          import json, sys
           try:
               with open('data.json', 'r', encoding='utf-8') as f:
                   data = json.load(f)
               
-              cards = ''
-              results = data.get('results', [])
-              
-              for row in results:
-                  props = row.get('properties', {})
-                  
-                  # 核心逻辑：扫描所有属性，只要发现符合类型的就抓取
-                  extracted = {'title': '无标题', 'cat': '未分类', 'status': '待办', 'url': '#', 'thought': '暂无感想'}
-                  
-                  for key, val in props.items():
-                      p_type = val.get('type')
-                      if p_type == 'title' and val['title']:
-                          extracted['title'] = val['title'][0]['plain_text']
-                      elif p_type == 'select' and val['select']:
-                          # 如果这一列叫分类，或者是第一个遇到的选项列
-                          if '分类' in key or extracted['cat'] == '未分类':
-                              extracted['cat'] = val['select']['name']
-                          # 如果这一列叫状态
-                          if '状态' in key:
-                              extracted['status'] = val['select']['name']
-                      elif p_type == 'url' and val['url']:
-                          extracted['url'] = val['url']
-                      elif p_type == 'rich_text' and val['rich_text']:
-                          if '感想' in key or '备注' in key:
-                              extracted['thought'] = val['rich_text'][0]['plain_text']
-
-                  cards += f'''
-          <div class=\"card\">
-              <span class=\"category\">{extracted['cat']}</span>
-              <div class=\"content\">
-                  <span class=\"status\">{extracted['status']}</span>
-                  <h3>{extracted['title']}</h3>
-                  <div class=\"thought\">“{extracted['thought']}”</div>
-                  <a href=\"{extracted['url']}\" target=\"_blank\" class=\"link-btn\">查看原帖</a>
-              </div>
-          </div>
-          '''
-
-              with open('index.html', 'r', encoding='utf-8') as f:
-                  html = f.read()
-              
-              # 替换逻辑：确保替换掉占位符或旧容器
-              if '<!-- DATA_PLACEHOLDER -->' in html:
-                  new_html = html.replace('<!-- DATA_PLACEHOLDER -->', cards)
+              # 关键动作：把抓到的第一条数据完整打印出来，让我们看清它的真面目
+              if data.get('results'):
+                  print('--- DATA SNAPSHOT START ---')
+                  print(json.dumps(data['results'][0], indent=2, ensure_ascii=False))
+                  print('--- DATA SNAPSHOT END ---')
               else:
-                  pattern = r'<div class=\"grid\" id=\"content\">.*?</div>'
-                  replacement = f'<div class=\"grid\" id=\"content\">\\n        {cards}\\n    </div>'
-                  new_html = re.sub(pattern, replacement, html, flags=re.DOTALL)
-
-              with open('index.html', 'w', encoding='utf-8') as f:
-                  f.write(new_html)
-
+                  print('CHECK: Notion returned an empty list. Results is empty.')
+              
+              # 后面暂时随便写点，确保不报错
+              with open('index.html', 'a') as f:
+                  f.write('<!-- Debug Mode -->')
           except Exception as e:
               print(f'Error: {e}')
               sys.exit(1)
