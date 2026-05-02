@@ -20,25 +20,12 @@ jobs:
             --data '{}' > data.json
 
       - name: Update HTML with Data
+        run: python3 sync.py
+
+      - name: Commit and Push
         run: |
-         python3 -c "
-          import json, sys
-          try:
-              with open('data.json', 'r', encoding='utf-8') as f:
-                  data = json.load(f)
-              
-              # 关键动作：把抓到的第一条数据完整打印出来，让我们看清它的真面目
-              if data.get('results'):
-                  print('--- DATA SNAPSHOT START ---')
-                  print(json.dumps(data['results'][0], indent=2, ensure_ascii=False))
-                  print('--- DATA SNAPSHOT END ---')
-              else:
-                  print('CHECK: Notion returned an empty list. Results is empty.')
-              
-              # 后面暂时随便写点，确保不报错
-              with open('index.html', 'a') as f:
-                  f.write('<!-- Debug Mode -->')
-          except Exception as e:
-              print(f'Error: {e}')
-              sys.exit(1)
-          "
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add index.html
+          git commit -m "Update collection from Notion" || exit 0
+          git push
