@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G & S 的终极知识库</title>
+    <title>My Threads Collection</title>
     <style>
         body { font-family: -apple-system, sans-serif; background: #f0f2f5; padding: 20px; margin: 0; color: #1c1e21; }
         h1 { text-align: center; margin-bottom: 20px; }
         
-        /* 筛选器样式 */
         .filters { max-width: 1200px; margin: 0 auto 30px auto; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .filter-group { margin-bottom: 10px; }
         .filter-group strong { display: inline-block; width: 80px; font-size: 14px; }
@@ -16,9 +15,9 @@
         .filters button:hover, .filters button.active { background: #000; color: white; }
         
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
-        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: 0.3s; }
+        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: 0.3s; display: flex; flex-direction: column; }
         .card img { width: 100%; height: 180px; object-fit: cover; display: block; border-bottom: 1px solid #eee; }
-        .content { padding: 20px; }
+        .content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
         
         .tags-row { margin-bottom: 10px; }
         .tag { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-right: 5px; }
@@ -28,16 +27,18 @@
         .status { font-size: 12px; color: #65676b; margin-bottom: 10px; font-weight: 600; }
         h3 { margin: 0 0 10px 0; font-size: 18px; line-height: 1.4; }
         .thought { background: #f8f9fa; padding: 12px; font-size: 13px; color: #4b4b4b; margin-bottom: 15px; border-left: 3px solid #ddd; font-style: italic; }
-        .details p { margin: 5px 0; font-size: 12px; color: #666; }
+        .details { margin-bottom: 15px; flex-grow: 1; }
+        .details p { margin: 5px 0; font-size: 12px; color: #666; line-height: 1.5; }
         
-        .action-buttons { display: flex; gap: 10px; margin-top: 15px; }
-        .btn { flex: 1; text-align: center; padding: 8px 0; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600; }
-        .btn-primary { background: #000; color: white; }
-        .btn-outline { background: white; color: #000; border: 1px solid #000; }
+        .action-buttons { display: flex; gap: 10px; margin-top: auto; }
+        .btn { flex: 1; text-align: center; padding: 10px 0; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600; transition: 0.2s; }
+        .btn:hover { opacity: 0.8; }
+        .btn-primary { background: #000; color: white; border: 1px solid #000; }
+        .btn-outline { background: white; color: #000; border: 1px solid #ddd; }
     </style>
 </head>
 <body>
-    <h1>📚 检索大厅</h1>
+    <h1>My Threads Collection</h1>
     
     <div class="filters">
         <div class="filter-group">
@@ -46,22 +47,22 @@
         </div>
         <div class="filter-group">
             <strong>内容载体：</strong>
-            <button onclick="filterCards('carrier', '观念/方法论')">观念/方法论</button><button onclick="filterCards('carrier', '书影音')">书影音</button><button onclick="filterCards('carrier', '地点/店铺')">地点/店铺</button><button onclick="filterCards('carrier', '软件/实体工具')">软件/实体工具</button>
+            <button onclick="filterCards('carrier', '观念/方法论')">观念/方法论</button><button onclick="filterCards('carrier', '地点/店铺')">地点/店铺</button><button onclick="filterCards('carrier', '软件/实体工具')">软件/实体工具</button><button onclick="filterCards('carrier', '书影音')">书影音</button>
         </div>
         <div class="filter-group">
             <strong>应用场景：</strong>
-            
+            <button onclick="filterCards('domain', '精神马杀鸡')">精神马杀鸡</button><button onclick="filterCards('domain', '个人成长/技能提升')">个人成长/技能提升</button><button onclick="filterCards('domain', '生活妙招')">生活妙招</button><button onclick="filterCards('domain', '吃喝玩乐')">吃喝玩乐</button>
         </div>
     </div>
 
     <div class="grid" id="cardContainer">
         
-            <div class="card" data-carrier="地点/店铺" data-domain="无场景" data-status="已完成/已内化">
+            <div class="card" data-carrier="地点/店铺" data-domain="吃喝玩乐" data-status="已完成/已内化">
                 <img src="images/351a86bb-2232-801c-8866-d9e42dc39213.jpg">
                 <div class="content">
                     <div class="tags-row">
                         <span class="tag carrier-tag">地点/店铺</span>
-                        <span class="tag domain-tag">无场景</span>
+                        <span class="tag domain-tag">吃喝玩乐</span>
                     </div>
                     <div class="status">状态：已完成/已内化</div>
                     <h3>成都折角书店</h3>
@@ -71,87 +72,87 @@
                         
                     </div>
                     <div class="action-buttons">
-                        <a href="https://www.notion.so/351a86bb2232801c8866d9e42dc39213" target="_blank" class="btn btn-primary">去 Notion 阅读</a>
+                        
                         <a href="https://www.threads.com/@garr.y/post/DXL0ovGFNGw?xmt=AQF0WiRlsC6NgG69Jz79msFb1nZEULlyisHYhaT9Bh43Ew" target="_blank" class="btn btn-outline">Threads 原帖</a>
                     </div>
                 </div>
             </div>
             
-            <div class="card" data-carrier="软件/实体工具" data-domain="无场景" data-status="待处理">
+            <div class="card" data-carrier="软件/实体工具" data-domain="生活妙招" data-status="待处理">
                 <img src="images/351a86bb-2232-80a7-8885-def8956275d6.jpg">
                 <div class="content">
                     <div class="tags-row">
                         <span class="tag carrier-tag">软件/实体工具</span>
-                        <span class="tag domain-tag">无场景</span>
+                        <span class="tag domain-tag">生活妙招</span>
                     </div>
                     <div class="status">状态：待处理</div>
                     <h3>花色袜子：最完美的白袜平替</h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
-                        <p>📍 无位置信息</p>
+                        
                         
                     </div>
                     <div class="action-buttons">
-                        <a href="https://www.notion.so/351a86bb223280a78885def8956275d6" target="_blank" class="btn btn-primary">去 Notion 阅读</a>
+                        
                         <a href="https://www.threads.com/@jinjiwoo48/post/DXmNtmHD8NV?xmt=AQF0WiRlsC6NgG69Jz79msFb1nZEULlyisHYhaT9Bh43Ew" target="_blank" class="btn btn-outline">Threads 原帖</a>
                     </div>
                 </div>
             </div>
             
-            <div class="card" data-carrier="软件/实体工具" data-domain="无场景" data-status="待处理">
+            <div class="card" data-carrier="软件/实体工具" data-domain="生活妙招" data-status="待处理">
                 <img src="images/35aa86bb-2232-8010-9847-d0084bbec797.jpg">
                 <div class="content">
                     <div class="tags-row">
                         <span class="tag carrier-tag">软件/实体工具</span>
-                        <span class="tag domain-tag">无场景</span>
+                        <span class="tag domain-tag">生活妙招</span>
                     </div>
                     <div class="status">状态：待处理</div>
                     <h3>促进睡眠的盒马酸枣仁茶</h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
-                        <p>📍 无位置信息</p>
+                        
                         
                     </div>
                     <div class="action-buttons">
-                        <a href="https://www.notion.so/35aa86bb223280109847d0084bbec797" target="_blank" class="btn btn-primary">去 Notion 阅读</a>
+                        
                         <a href="https://www.threads.com/@sanyi_cy/post/DYD7tQuG_d5?xmt=AQG0M2STcl7tg0R_0w90YnsUYnXjS-1Jet_bW2Ds_j6Fhg" target="_blank" class="btn btn-outline">Threads 原帖</a>
                     </div>
                 </div>
             </div>
             
-            <div class="card" data-carrier="观念/方法论" data-domain="无场景" data-status="待处理">
+            <div class="card" data-carrier="观念/方法论" data-domain="吃喝玩乐" data-status="待处理">
                 <img src="images/35aa86bb-2232-8035-9ab9-f5e86f7bbeb5.jpg">
                 <div class="content">
                     <div class="tags-row">
                         <span class="tag carrier-tag">观念/方法论</span>
-                        <span class="tag domain-tag">无场景</span>
+                        <span class="tag domain-tag">吃喝玩乐</span>
                     </div>
                     <div class="status">状态：待处理</div>
                     <h3>体检筛查思路（按年龄分类）</h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
-                        <p>📍 无位置信息</p>
+                        
                         
                     </div>
                     <div class="action-buttons">
-                        <a href="https://www.notion.so/35aa86bb223280359ab9f5e86f7bbeb5" target="_blank" class="btn btn-primary">去 Notion 阅读</a>
+                        
                         <a href="https://www.threads.com/@_xh0523/post/DX50-x6HdQO?xmt=AQG0M2STcl7tg0R_0w90YnsUYnXjS-1Jet_bW2Ds_j6Fhg" target="_blank" class="btn btn-outline">Threads 原帖</a>
                     </div>
                 </div>
             </div>
             
-            <div class="card" data-carrier="书影音" data-domain="无场景" data-status="实践中">
+            <div class="card" data-carrier="书影音" data-domain="精神马杀鸡" data-status="实践中">
                 <img src="images/35aa86bb-2232-80a8-bafb-c349cb9711db.jpg">
                 <div class="content">
                     <div class="tags-row">
                         <span class="tag carrier-tag">书影音</span>
-                        <span class="tag domain-tag">无场景</span>
+                        <span class="tag domain-tag">精神马杀鸡</span>
                     </div>
                     <div class="status">状态：实践中</div>
                     <h3>少年凱歌 </h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
-                        <p>📍 无位置信息</p>
+                        
                         
                     </div>
                     <div class="action-buttons">
@@ -161,22 +162,22 @@
                 </div>
             </div>
             
-            <div class="card" data-carrier="软件/实体工具" data-domain="无场景" data-status="待处理">
+            <div class="card" data-carrier="软件/实体工具" data-domain="个人成长/技能提升" data-status="待处理">
                 
                 <div class="content">
                     <div class="tags-row">
                         <span class="tag carrier-tag">软件/实体工具</span>
-                        <span class="tag domain-tag">无场景</span>
+                        <span class="tag domain-tag">个人成长/技能提升</span>
                     </div>
                     <div class="status">状态：待处理</div>
                     <h3>AI Tools</h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
-                        <p>📍 无位置信息</p>
+                        
                         
                     </div>
                     <div class="action-buttons">
-                        <a href="https://www.notion.so/AI-Tools-35aa86bb223280f69a01de54afc114fc" target="_blank" class="btn btn-primary">去 Notion 阅读</a>
+                        
                         <a href="https://www.threads.com/@ai.tools_daily_/post/DP6OOjQkRfB?xmt=AQG0M2STcl7tg0R_0w90YnsUYnXjS-1Jet_bW2Ds_j6Fhg" target="_blank" class="btn btn-outline">Threads 原帖</a>
                     </div>
                 </div>
@@ -185,12 +186,11 @@
     </div>
 
     <script>
-        // 超级轻量级的前端筛选逻辑
         function filterCards(type, value) {
             const cards = document.querySelectorAll('.card');
             cards.forEach(card => {
                 if (card.getAttribute('data-' + type) === value) {
-                    card.style.display = 'block';
+                    card.style.display = 'flex';
                 } else {
                     card.style.display = 'none';
                 }
@@ -199,7 +199,7 @@
 
         function resetFilters() {
             const cards = document.querySelectorAll('.card');
-            cards.forEach(card => card.style.display = 'block');
+            cards.forEach(card => card.style.display = 'flex');
         }
     </script>
 </body>
