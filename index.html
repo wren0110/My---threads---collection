@@ -6,27 +6,47 @@
     <title>My Threads Collection</title>
     <style>
         body { font-family: -apple-system, sans-serif; background: #f0f2f5; padding: 20px; margin: 0; color: #1c1e21; }
-        h1 { text-align: center; margin-bottom: 20px; }
+        h1 { text-align: center; margin-bottom: 25px; font-weight: 800; letter-spacing: -0.5px; }
         
-        .filters { max-width: 1200px; margin: 0 auto 30px auto; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .filter-group { margin-bottom: 10px; }
-        .filter-group strong { display: inline-block; width: 80px; font-size: 14px; }
-        .filters button { background: #eee; border: none; padding: 6px 12px; border-radius: 20px; margin-right: 8px; cursor: pointer; font-size: 13px; transition: 0.2s; }
-        .filters button:hover, .filters button.active { background: #000; color: white; }
+        /* 看板样式 */
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto 25px auto; }
+        .stat-card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); text-align: center; display: flex; flex-direction: column; justify-content: center; border-bottom: 3px solid #ddd; }
+        .stat-card.total { border-bottom-color: #000; }
+        .stat-num { font-size: 24px; font-weight: 800; color: #1c1e21; }
+        .stat-label { font-size: 12px; color: #65676b; margin-top: 4px; font-weight: 600; }
         
+        /* 搜索框 & 筛选器 */
+        .controls-panel { max-width: 1200px; margin: 0 auto 30px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .search-wrapper { margin-bottom: 15px; }
+        .search-input { width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid #e4e6eb; font-size: 14px; box-sizing: border-box; transition: 0.2s; outline: none; }
+        .search-input:focus { border-color: #000; box-shadow: 0 0 0 2px rgba(0,0,0,0.05); }
+        
+        .filter-group { margin-bottom: 10px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+        .filter-group strong { font-size: 13px; color: #65676b; width: 75px; }
+        .controls-panel button { background: #f0f2f5; border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600; color: #050505; transition: 0.2s; }
+        .controls-panel button:hover { background: #e4e6eb; }
+        .controls-panel button.active { background: #000; color: white; }
+        .reset-btn { background: #ebf5ff !important; color: #1877f2 !important; }
+        .reset-btn:hover { background: #e1f0ff !important; }
+        
+        /* 网格卡片 */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
         .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: 0.3s; display: flex; flex-direction: column; }
-        .card img { width: 100%; height: 180px; object-fit: cover; display: block; border-bottom: 1px solid #eee; }
+        .card img { width: 100%; height: 180px; object-fit: cover; display: block; border-bottom: 1px solid #f0f2f5; }
         .content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
         
-        .tags-row { margin-bottom: 10px; }
+        .tags-row { margin-bottom: 12px; }
         .tag { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-right: 5px; }
         .carrier-tag { background: #e3f2fd; color: #1565c0; }
         .domain-tag { background: #fce4ec; color: #c2185b; }
         
-        .status { font-size: 12px; color: #65676b; margin-bottom: 10px; font-weight: 600; }
-        h3 { margin: 0 0 10px 0; font-size: 18px; line-height: 1.4; }
-        .thought { background: #f8f9fa; padding: 12px; font-size: 13px; color: #4b4b4b; margin-bottom: 15px; border-left: 3px solid #ddd; font-style: italic; }
+        .status { font-size: 11px; color: #65676b; margin-bottom: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        /* 文本溢出防护 */
+        h3 { margin: 0 0 10px 0; font-size: 17px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
+        .thought { background: #f8f9fa; padding: 12px; font-size: 13px; color: #4b4b4b; margin-bottom: 15px; border-left: 3px solid #ddd; font-style: italic; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; transition: max-height 0.3s; }
+        .card:hover .thought, .card:hover h3 { -webkit-line-clamp: unset; overflow: visible; }
+        
         .details { margin-bottom: 15px; flex-grow: 1; }
         .details p { margin: 5px 0; font-size: 12px; color: #666; line-height: 1.5; }
         
@@ -34,24 +54,51 @@
         .btn { flex: 1; text-align: center; padding: 10px 0; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600; transition: 0.2s; }
         .btn:hover { opacity: 0.8; }
         .btn-primary { background: #000; color: white; border: 1px solid #000; }
-        .btn-outline { background: white; color: #000; border: 1px solid #ddd; }
+        .btn-outline { background: white; color: #000; border: 1px solid #e4e6eb; }
     </style>
 </head>
 <body>
     <h1>My Threads Collection</h1>
     
-    <div class="filters">
+    <div class="dashboard">
+        
+        <div class="stat-card total">
+            <span class="stat-num">19</span>
+            <span class="stat-label">总灵感数</span>
+        </div>
+        
+            <div class="stat-card">
+                <span class="stat-num">4</span>
+                <span class="stat-label">实践中</span>
+            </div>
+            
+            <div class="stat-card">
+                <span class="stat-num">14</span>
+                <span class="stat-label">待处理</span>
+            </div>
+            
+            <div class="stat-card">
+                <span class="stat-num">1</span>
+                <span class="stat-label">已完成/已内化</span>
+            </div>
+            
+    </div>
+    
+    <div class="controls-panel">
+        <div class="search-wrapper">
+            <input type="text" id="searchInput" class="search-input" placeholder="输入关键字，实时检索标题、感想或备注内容..." oninput="applyAllFilters()">
+        </div>
         <div class="filter-group">
-            <strong>复原全部：</strong>
-            <button onclick="resetFilters()">显示所有</button>
+            <strong>功能控制：</strong>
+            <button class="reset-btn" onclick="resetFilters()">重置所有过滤</button>
         </div>
         <div class="filter-group">
             <strong>内容载体：</strong>
-            <button onclick="filterCards('carrier', '书影音')">书影音</button><button onclick="filterCards('carrier', '地点/店铺')">地点/店铺</button><button onclick="filterCards('carrier', '观念/方法论')">观念/方法论</button><button onclick="filterCards('carrier', '实体好物')">实体好物</button><button onclick="filterCards('carrier', '数字工具/网站')">数字工具/网站</button>
+            <button class="filter-btn" onclick="toggleFilter(this, 'carrier', '数字工具/网站')">数字工具/网站</button><button class="filter-btn" onclick="toggleFilter(this, 'carrier', '观念/方法论')">观念/方法论</button><button class="filter-btn" onclick="toggleFilter(this, 'carrier', '地点/店铺')">地点/店铺</button><button class="filter-btn" onclick="toggleFilter(this, 'carrier', '实体好物')">实体好物</button><button class="filter-btn" onclick="toggleFilter(this, 'carrier', '书影音')">书影音</button>
         </div>
         <div class="filter-group">
             <strong>应用场景：</strong>
-            <button onclick="filterCards('domain', '个人成长/技能提升')">个人成长/技能提升</button><button onclick="filterCards('domain', '精神马杀鸡')">精神马杀鸡</button><button onclick="filterCards('domain', '生活妙招')">生活妙招</button><button onclick="filterCards('domain', '吃喝玩乐')">吃喝玩乐</button><button onclick="filterCards('domain', '好物分享')">好物分享</button>
+            <button class="filter-btn" onclick="toggleFilter(this, 'domain', '吃喝玩乐')">吃喝玩乐</button><button class="filter-btn" onclick="toggleFilter(this, 'domain', '精神马杀鸡')">精神马杀鸡</button><button class="filter-btn" onclick="toggleFilter(this, 'domain', '好物分享')">好物分享</button><button class="filter-btn" onclick="toggleFilter(this, 'domain', '个人成长/技能提升')">个人成长/技能提升</button><button class="filter-btn" onclick="toggleFilter(this, 'domain', '生活妙招')">生活妙招</button>
         </div>
     </div>
 
@@ -65,7 +112,7 @@
                         <span class="tag domain-tag">精神马杀鸡</span>
                     </div>
                     <div class="status">状态：实践中</div>
-                    <h3>雷曼诺卡牌网站</h3>
+                    <h3 class="card-title">雷曼诺卡牌网站</h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
                         <p>📍 https://stargazer.estework.site/</p>
@@ -86,7 +133,7 @@
                         <span class="tag domain-tag">个人成长/技能提升</span>
                     </div>
                     <div class="status">状态：待处理</div>
-                    <h3>Gemini VibeCoding 学习地图</h3>
+                    <h3 class="card-title">Gemini VibeCoding 学习地图</h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
                         <p>📍 https://dean-lin.medium.com/vibe-coding-%E5%AD%B8%E7%BF%92%E5%9C%B0%E5%9C%96-%E7%94%A8%E5%AF%A6%E6%88%B0%E5%B8%B6%E4%BD%A0%E6%90%9E%E6%87%82-gemini-google-ai-studio-antigravity-%E7%9A%84%E4%BD%BF%E7%94%A8%E6%83%85%E5%A2%83-232b5f89c057</p>
@@ -107,7 +154,7 @@
                         <span class="tag domain-tag">吃喝玩乐</span>
                     </div>
                     <div class="status">状态：待处理</div>
-                    <h3>东京住宿推荐</h3>
+                    <h3 class="card-title">东京住宿推荐</h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
                         <p>📍 日本东京</p>
@@ -128,7 +175,7 @@
                         <span class="tag domain-tag">好物分享</span>
                     </div>
                     <div class="status">状态：待处理</div>
-                    <h3>牛仔裤推荐</h3>
+                    <h3 class="card-title">牛仔裤推荐</h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
                         <p>📍 TB： Forever 21</p>
@@ -149,7 +196,7 @@
                         <span class="tag domain-tag">无场景</span>
                     </div>
                     <div class="status">状态：待处理</div>
-                    <h3>泰国美食推荐 Easy buddy</h3>
+                    <h3 class="card-title">泰国美食推荐 Easy buddy</h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
                         
@@ -170,7 +217,7 @@
                         <span class="tag domain-tag">吃喝玩乐</span>
                     </div>
                     <div class="status">状态：待处理</div>
-                    <h3>澳门长洲糯米糍</h3>
+                    <h3 class="card-title">澳门长洲糯米糍</h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
                         <p>📍 泰国</p>
@@ -191,7 +238,7 @@
                         <span class="tag domain-tag">吃喝玩乐</span>
                     </div>
                     <div class="status">状态：待处理</div>
-                    <h3>GU芭蕾鞋推荐</h3>
+                    <h3 class="card-title">GU芭蕾鞋推荐</h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
                         
@@ -212,12 +259,12 @@
                         <span class="tag domain-tag">生活妙招</span>
                     </div>
                     <div class="status">状态：实践中</div>
-                    <h3>基于NeoDB(neodb.social)公共接口编写的跨平台网页客户端「别录.」(bielu.app)！
+                    <h3 class="card-title">基于NeoDB(neodb.social)公共接口编写的跨平台网页客户端「别录.」(bielu.app)！
 具有完整的书、影音、游戏、播客的标记和评论功能，支持搜索。</h3>
                     <div class="thought">“刚刚注册好，我先试试看”</div>
                     <div class="details">
                         <p>📍 bielu.app</p>
-                        <p>📝 刚刚注册好，我先试试看</p>
+                        <p class="card-remark">📝 刚刚注册好，我先试试看</p>
                     </div>
                     <div class="action-buttons">
                         
@@ -234,7 +281,7 @@
                         <span class="tag domain-tag">精神马杀鸡</span>
                     </div>
                     <div class="status">状态：实践中</div>
-                    <h3>拉美人的人生观：如果家里有人去世，你不一定非要赶回去，因为你们已经见过了。
+                    <h3 class="card-title">拉美人的人生观：如果家里有人去世，你不一定非要赶回去，因为你们已经见过了。
 但如果有孩子出生，你一定要回去，因为那是你们第一次见面。</h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
@@ -256,7 +303,7 @@
                         <span class="tag domain-tag">个人成长/技能提升</span>
                     </div>
                     <div class="status">状态：待处理</div>
-                    <h3>英文的非虚构写作书籍《write to learn》</h3>
+                    <h3 class="card-title">英文的非虚构写作书籍《write to learn》</h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
                         
@@ -277,7 +324,7 @@
                         <span class="tag domain-tag">吃喝玩乐</span>
                     </div>
                     <div class="status">状态：待处理</div>
-                    <h3>大连酒店推荐（东港商务区）</h3>
+                    <h3 class="card-title">大连酒店推荐（东港商务区）</h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
                         <p>📍 大连</p>
@@ -298,7 +345,7 @@
                         <span class="tag domain-tag">吃喝玩乐</span>
                     </div>
                     <div class="status">状态：待处理</div>
-                    <h3>分享在pdd买过最夯的东西</h3>
+                    <h3 class="card-title">分享在pdd买过最夯的东西</h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
                         
@@ -319,7 +366,7 @@
                         <span class="tag domain-tag">吃喝玩乐</span>
                     </div>
                     <div class="status">状态：待处理</div>
-                    <h3>久站不累又配裙子好看的鞋</h3>
+                    <h3 class="card-title">久站不累又配裙子好看的鞋</h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
                         
@@ -340,7 +387,7 @@
                         <span class="tag domain-tag">个人成长/技能提升</span>
                     </div>
                     <div class="status">状态：待处理</div>
-                    <h3>AI tools</h3>
+                    <h3 class="card-title">AI tools</h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
                         
@@ -361,7 +408,7 @@
                         <span class="tag domain-tag">精神马杀鸡</span>
                     </div>
                     <div class="status">状态：实践中</div>
-                    <h3>少年凱歌 </h3>
+                    <h3 class="card-title">少年凱歌 </h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
                         
@@ -382,7 +429,7 @@
                         <span class="tag domain-tag">生活妙招</span>
                     </div>
                     <div class="status">状态：待处理</div>
-                    <h3>体检筛查思路（按年龄分类）</h3>
+                    <h3 class="card-title">体检筛查思路（按年龄分类）</h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
                         
@@ -403,7 +450,7 @@
                         <span class="tag domain-tag">生活妙招</span>
                     </div>
                     <div class="status">状态：待处理</div>
-                    <h3>促进睡眠的盒马酸枣仁茶</h3>
+                    <h3 class="card-title">促进睡眠的盒马酸枣仁茶</h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
                         
@@ -424,7 +471,7 @@
                         <span class="tag domain-tag">生活妙招</span>
                     </div>
                     <div class="status">状态：待处理</div>
-                    <h3>花色袜子：最完美的白袜平替</h3>
+                    <h3 class="card-title">花色袜子：最完美的白袜平替</h3>
                     <div class="thought">“暂无感想”</div>
                     <div class="details">
                         
@@ -445,11 +492,11 @@
                         <span class="tag domain-tag">吃喝玩乐</span>
                     </div>
                     <div class="status">状态：已完成/已内化</div>
-                    <h3>成都折角书店</h3>
+                    <h3 class="card-title">成都折角书店</h3>
                     <div class="thought">“靠着选书和大冰箱，店主就这么撑起淡淡的逼格”</div>
                     <div class="details">
                         <p>📍 成都</p>
-                        <p>📝 靠着选书和大冰箱，店主就这么撑起淡淡的逼格</p>
+                        <p class="card-remark">📝 靠着选书和大冰箱，店主就这么撑起淡淡的逼格</p>
                     </div>
                     <div class="action-buttons">
                         
@@ -461,20 +508,66 @@
     </div>
 
     <script>
-        function filterCards(type, value) {
+        // 核心多功能混合过滤引擎
+        let activeCarrier = null;
+        let activeDomain = null;
+
+        function toggleFilter(btn, type, value) {
+            const siblings = btn.parentNode.querySelectorAll('button');
+            
+            if (type === 'carrier') {
+                if (activeCarrier === value) {
+                    activeCarrier = null;
+                    btn.classList.remove('active');
+                } else {
+                    siblings.forEach(s => s.classList.remove('active'));
+                    activeCarrier = value;
+                    btn.classList.add('active');
+                }
+            } else if (type === 'domain') {
+                if (activeDomain === value) {
+                    activeDomain = null;
+                    btn.classList.remove('active');
+                } else {
+                    siblings.forEach(s => s.classList.remove('active'));
+                    activeDomain = value;
+                    btn.classList.add('active');
+                }
+            }
+            applyAllFilters();
+        }
+
+        function resetFilters() {
+            activeCarrier = null;
+            activeDomain = null;
+            document.getElementById('searchInput').value = '';
+            document.querySelectorAll('.controls-panel button').forEach(b => b.classList.remove('active'));
+            applyAllFilters();
+        }
+
+        function applyAllFilters() {
+            const searchTxt = document.getElementById('searchInput').value.toLowerCase();
             const cards = document.querySelectorAll('.card');
+            
             cards.forEach(card => {
-                if (card.getAttribute('data-' + type) === value) {
+                const cVal = card.getAttribute('data-carrier');
+                const dVal = card.getAttribute('data-domain');
+                
+                const titleTxt = card.querySelector('.card-title').innerText.toLowerCase();
+                const thoughtTxt = card.querySelector('.thought').innerText.toLowerCase();
+                const remarkEl = card.querySelector('.card-remark');
+                const remarkTxt = remarkEl ? remarkEl.innerText.toLowerCase() : '';
+                
+                const matchCarrier = !activeCarrier || cVal === activeCarrier;
+                const matchDomain = !activeDomain || dVal === activeDomain;
+                const matchSearch = !searchTxt || titleTxt.includes(searchTxt) || thoughtTxt.includes(searchTxt) || remarkTxt.includes(searchTxt);
+                
+                if (matchCarrier && matchDomain && matchSearch) {
                     card.style.display = 'flex';
                 } else {
                     card.style.display = 'none';
                 }
             });
-        }
-
-        function resetFilters() {
-            const cards = document.querySelectorAll('.card');
-            cards.forEach(card => card.style.display = 'flex');
         }
     </script>
 </body>
