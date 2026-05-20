@@ -1,7 +1,6 @@
 import json, sys, re, os, urllib.request
 
 def get_val(props, keywords, default=""):
-    """升级版万能钥匙：支持模糊搜索和多选类型"""
     for k, val in props.items():
         if any(kw in k for kw in keywords):
             ptype = val.get('type')
@@ -14,6 +13,11 @@ def get_val(props, keywords, default=""):
             if ptype == 'url' and val['url']: return val['url']
             if ptype == 'rich_text' and val['rich_text']: return val['rich_text'][0]['plain_text']
     return default
+
+def linkify(text):
+    """智能识别文本中的URL，并转换为新标签页打开的超链接"""
+    url_pattern = re.compile(r'(https?://[^\s]+)')
+    return url_pattern.sub(r'<a href="\1" target="_blank" style="color: #1877f2; text-decoration: underline; word-break: break-all;">\1</a>', text)
 
 def run():
     try:
@@ -30,7 +34,6 @@ def run():
         carriers = set()
         domains = set()
 
-        # 数据看板初始化
         total_items = 0
         status_stats = {}
 
@@ -46,7 +49,10 @@ def run():
             thought = get_val(props, ['感想'], '暂无感想')
             remark = get_val(props, ['备注'], '')
             
-            # 统计数据累加
+            # 智能识别链接
+            location_html = linkify(location)
+            remark_html = linkify(remark)
+
             total_items += 1
             status_stats[status] = status_stats.get(status, 0) + 1
 
@@ -65,7 +71,7 @@ def run():
                         urllib.request.urlretrieve(img_url, img_filename)
                         cover_img_html = f'<img src="{img_filename}">'
                     except Exception as e:
-                        print(f"图片下载失败: {e}")
+                        pass
                 elif file_info['type'] == 'external':
                     cover_img_html = f'<img src="{file_info["external"]["url"]}">'
 
@@ -83,8 +89,8 @@ def run():
                     <h3 class="card-title">{title}</h3>
                     <div class="thought">“{thought}”</div>
                     <div class="details">
-                        {f'<p>📍 {location}</p>' if location != '无位置信息' else ''}
-                        {f'<p class="card-remark">📝 {remark}</p>' if remark else ''}
+                        {f'<p>📍 {location_html}</p>' if location != '无位置信息' else ''}
+                        {f'<p class="card-remark">📝 {remark_html}</p>' if remark else ''}
                     </div>
                     <div class="action-buttons">
                         {notion_btn}
@@ -94,16 +100,15 @@ def run():
             </div>
             '''
 
-        # 生成数据看板 HTML
         dashboard_html = f'''
-        <div class="stat-card total">
+        <div class="stat-card total" onclick="toggleStatusFilter(this, null)" style="cursor: pointer;">
             <span class="stat-num">{total_items}</span>
             <span class="stat-label">总灵感数</span>
         </div>
         '''
         for s_name, s_count in status_stats.items():
             dashboard_html += f'''
-            <div class="stat-card">
+            <div class="stat-card" data-status-btn="{s_name}" onclick="toggleStatusFilter(this, '{s_name}')" style="cursor: pointer;">
                 <span class="stat-num">{s_count}</span>
                 <span class="stat-label">{s_name}</span>
             </div>
@@ -122,14 +127,14 @@ def run():
         body {{ font-family: -apple-system, sans-serif; background: #f0f2f5; padding: 20px; margin: 0; color: #1c1e21; }}
         h1 {{ text-align: center; margin-bottom: 25px; font-weight: 800; letter-spacing: -0.5px; }}
         
-        /* 看板样式 */
         .dashboard {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto 25px auto; }}
-        .stat-card {{ background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); text-align: center; display: flex; flex-direction: column; justify-content: center; border-bottom: 3px solid #ddd; }}
-        .stat-card.total {{ border-bottom-color: #000; }}
+        .stat-card {{ background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); text-align: center; display: flex; flex-direction: column; justify-content: center; border-bottom: 3px solid #ddd; transition: all 0.2s; }}
+        .stat-card:hover {{ background: #f8f9fa; transform: translateY(-2px); }}
+        .stat-card.active {{ border-bottom: 3px solid #1877f2; background: #ebf5ff; }}
+        .stat-card.total.active {{ border-bottom-color: #000; background: #f0f2f5; }}
         .stat-num {{ font-size: 24px; font-weight: 800; color: #1c1e21; }}
         .stat-label {{ font-size: 12px; color: #65676b; margin-top: 4px; font-weight: 600; }}
         
-        /* 搜索框 & 筛选器 */
         .controls-panel {{ max-width: 1200px; margin: 0 auto 30px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }}
         .search-wrapper {{ margin-bottom: 15px; }}
         .search-input {{ width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid #e4e6eb; font-size: 14px; box-sizing: border-box; transition: 0.2s; outline: none; }}
@@ -143,7 +148,6 @@ def run():
         .reset-btn {{ background: #ebf5ff !important; color: #1877f2 !important; }}
         .reset-btn:hover {{ background: #e1f0ff !important; }}
         
-        /* 网格卡片 */
         .grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }}
         .card {{ background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: 0.3s; display: flex; flex-direction: column; }}
         .card img {{ width: 100%; height: 180px; object-fit: cover; display: block; border-bottom: 1px solid #f0f2f5; }}
@@ -156,7 +160,6 @@ def run():
         
         .status {{ font-size: 11px; color: #65676b; margin-bottom: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }}
         
-        /* 文本溢出防护 */
         h3 {{ margin: 0 0 10px 0; font-size: 17px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }}
         .thought {{ background: #f8f9fa; padding: 12px; font-size: 13px; color: #4b4b4b; margin-bottom: 15px; border-left: 3px solid #ddd; font-style: italic; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; transition: max-height 0.3s; }}
         .card:hover .thought, .card:hover h3 {{ -webkit-line-clamp: unset; overflow: visible; }}
@@ -201,9 +204,23 @@ def run():
     </div>
 
     <script>
-        // 核心多功能混合过滤引擎
         let activeCarrier = null;
         let activeDomain = null;
+        let activeStatus = null;
+
+        function toggleStatusFilter(btn, value) {{
+            const allStatCards = document.querySelectorAll('.stat-card');
+            
+            if (activeStatus === value) {{
+                activeStatus = null;
+                btn.classList.remove('active');
+            }} else {{
+                allStatCards.forEach(c => c.classList.remove('active'));
+                activeStatus = value;
+                btn.classList.add('active');
+            }}
+            applyAllFilters();
+        }}
 
         function toggleFilter(btn, type, value) {{
             const siblings = btn.parentNode.querySelectorAll('button');
@@ -233,8 +250,10 @@ def run():
         function resetFilters() {{
             activeCarrier = null;
             activeDomain = null;
+            activeStatus = null;
             document.getElementById('searchInput').value = '';
             document.querySelectorAll('.controls-panel button').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active'));
             applyAllFilters();
         }}
 
@@ -245,6 +264,7 @@ def run():
             cards.forEach(card => {{
                 const cVal = card.getAttribute('data-carrier');
                 const dVal = card.getAttribute('data-domain');
+                const sVal = card.getAttribute('data-status');
                 
                 const titleTxt = card.querySelector('.card-title').innerText.toLowerCase();
                 const thoughtTxt = card.querySelector('.thought').innerText.toLowerCase();
@@ -253,9 +273,10 @@ def run():
                 
                 const matchCarrier = !activeCarrier || cVal === activeCarrier;
                 const matchDomain = !activeDomain || dVal === activeDomain;
+                const matchStatus = !activeStatus || sVal === activeStatus;
                 const matchSearch = !searchTxt || titleTxt.includes(searchTxt) || thoughtTxt.includes(searchTxt) || remarkTxt.includes(searchTxt);
                 
-                if (matchCarrier && matchDomain && matchSearch) {{
+                if (matchCarrier && matchDomain && matchStatus && matchSearch) {{
                     card.style.display = 'flex';
                 }} else {{
                     card.style.display = 'none';
