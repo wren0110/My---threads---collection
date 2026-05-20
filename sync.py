@@ -9,7 +9,6 @@ def get_val(props, keywords, default=""):
             
             if ptype == 'title' and val['title']: return val['title'][0]['plain_text']
             if ptype == 'select' and val['select']: return val['select']['name']
-            # 修复：兼容被误设为多选的情况
             if ptype == 'multi_select' and val['multi_select']: return ", ".join([x['name'] for x in val['multi_select']])
             if ptype == 'status' and val['status']: return val['status']['name']
             if ptype == 'url' and val['url']: return val['url']
@@ -31,10 +30,13 @@ def run():
         carriers = set()
         domains = set()
 
+        # 数据看板初始化
+        total_items = 0
+        status_stats = {}
+
         for row in data['results']:
             props = row.get('properties', {})
             
-            # 使用更宽容的关键词阵列来抓取数据
             title = get_val(props, ['标题', 'Name'], '无标题')
             carrier = get_val(props, ['内容载体', '载体'], '未分类')
             domain = get_val(props, ['应用场景', '场景'], '无场景')
@@ -44,12 +46,15 @@ def run():
             thought = get_val(props, ['感想'], '暂无感想')
             remark = get_val(props, ['备注'], '')
             
+            # 统计数据累加
+            total_items += 1
+            status_stats[status] = status_stats.get(status, 0) + 1
+
             if carrier and carrier != '未分类': carriers.add(carrier)
             if domain and domain != '无场景': domains.add(domain)
 
             notion_url = row.get('url', '#')
 
-            # 抓取并固化图片
             cover_img_html = ""
             if '头图' in props and props['头图'].get('files') and len(props['头图']['files']) > 0:
                 file_info = props['头图']['files'][0]
@@ -64,7 +69,6 @@ def run():
                 elif file_info['type'] == 'external':
                     cover_img_html = f'<img src="{file_info["external"]["url"]}">'
 
-            # 智能判断：只有“书影音”才显示去 Notion 阅读的按钮
             notion_btn = f'<a href="{notion_url}" target="_blank" class="btn btn-primary">去 Notion 阅读</a>' if '书影音' in carrier else ''
 
             cards += f'''
@@ -76,11 +80,11 @@ def run():
                         <span class="tag domain-tag">{domain}</span>
                     </div>
                     <div class="status">状态：{status}</div>
-                    <h3>{title}</h3>
+                    <h3 class="card-title">{title}</h3>
                     <div class="thought">“{thought}”</div>
                     <div class="details">
                         {f'<p>📍 {location}</p>' if location != '无位置信息' else ''}
-                        {f'<p>📝 {remark}</p>' if remark else ''}
+                        {f'<p class="card-remark">📝 {remark}</p>' if remark else ''}
                     </div>
                     <div class="action-buttons">
                         {notion_btn}
@@ -90,8 +94,23 @@ def run():
             </div>
             '''
 
-        carrier_btns = "".join([f'<button onclick="filterCards(\'carrier\', \'{c}\')">{c}</button>' for c in carriers])
-        domain_btns = "".join([f'<button onclick="filterCards(\'domain\', \'{d}\')">{d}</button>' for d in domains])
+        # 生成数据看板 HTML
+        dashboard_html = f'''
+        <div class="stat-card total">
+            <span class="stat-num">{total_items}</span>
+            <span class="stat-label">总灵感数</span>
+        </div>
+        '''
+        for s_name, s_count in status_stats.items():
+            dashboard_html += f'''
+            <div class="stat-card">
+                <span class="stat-num">{s_count}</span>
+                <span class="stat-label">{s_name}</span>
+            </div>
+            '''
+
+        carrier_btns = "".join([f'<button class="filter-btn" onclick="toggleFilter(this, \'carrier\', \'{c}\')">{c}</button>' for c in carriers])
+        domain_btns = "".join([f'<button class="filter-btn" onclick="toggleFilter(this, \'domain\', \'{d}\')">{d}</button>' for d in domains])
 
         html_template = f'''<!DOCTYPE html>
 <html lang="zh-CN">
@@ -101,27 +120,47 @@ def run():
     <title>My Threads Collection</title>
     <style>
         body {{ font-family: -apple-system, sans-serif; background: #f0f2f5; padding: 20px; margin: 0; color: #1c1e21; }}
-        h1 {{ text-align: center; margin-bottom: 20px; }}
+        h1 {{ text-align: center; margin-bottom: 25px; font-weight: 800; letter-spacing: -0.5px; }}
         
-        .filters {{ max-width: 1200px; margin: 0 auto 30px auto; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }}
-        .filter-group {{ margin-bottom: 10px; }}
-        .filter-group strong {{ display: inline-block; width: 80px; font-size: 14px; }}
-        .filters button {{ background: #eee; border: none; padding: 6px 12px; border-radius: 20px; margin-right: 8px; cursor: pointer; font-size: 13px; transition: 0.2s; }}
-        .filters button:hover, .filters button.active {{ background: #000; color: white; }}
+        /* 看板样式 */
+        .dashboard {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto 25px auto; }}
+        .stat-card {{ background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); text-align: center; display: flex; flex-direction: column; justify-content: center; border-bottom: 3px solid #ddd; }}
+        .stat-card.total {{ border-bottom-color: #000; }}
+        .stat-num {{ font-size: 24px; font-weight: 800; color: #1c1e21; }}
+        .stat-label {{ font-size: 12px; color: #65676b; margin-top: 4px; font-weight: 600; }}
         
+        /* 搜索框 & 筛选器 */
+        .controls-panel {{ max-width: 1200px; margin: 0 auto 30px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }}
+        .search-wrapper {{ margin-bottom: 15px; }}
+        .search-input {{ width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid #e4e6eb; font-size: 14px; box-sizing: border-box; transition: 0.2s; outline: none; }}
+        .search-input:focus {{ border-color: #000; box-shadow: 0 0 0 2px rgba(0,0,0,0.05); }}
+        
+        .filter-group {{ margin-bottom: 10px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }}
+        .filter-group strong {{ font-size: 13px; color: #65676b; width: 75px; }}
+        .controls-panel button {{ background: #f0f2f5; border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 600; color: #050505; transition: 0.2s; }}
+        .controls-panel button:hover {{ background: #e4e6eb; }}
+        .controls-panel button.active {{ background: #000; color: white; }}
+        .reset-btn {{ background: #ebf5ff !important; color: #1877f2 !important; }}
+        .reset-btn:hover {{ background: #e1f0ff !important; }}
+        
+        /* 网格卡片 */
         .grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }}
         .card {{ background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: 0.3s; display: flex; flex-direction: column; }}
-        .card img {{ width: 100%; height: 180px; object-fit: cover; display: block; border-bottom: 1px solid #eee; }}
+        .card img {{ width: 100%; height: 180px; object-fit: cover; display: block; border-bottom: 1px solid #f0f2f5; }}
         .content {{ padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }}
         
-        .tags-row {{ margin-bottom: 10px; }}
+        .tags-row {{ margin-bottom: 12px; }}
         .tag {{ padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; margin-right: 5px; }}
         .carrier-tag {{ background: #e3f2fd; color: #1565c0; }}
         .domain-tag {{ background: #fce4ec; color: #c2185b; }}
         
-        .status {{ font-size: 12px; color: #65676b; margin-bottom: 10px; font-weight: 600; }}
-        h3 {{ margin: 0 0 10px 0; font-size: 18px; line-height: 1.4; }}
-        .thought {{ background: #f8f9fa; padding: 12px; font-size: 13px; color: #4b4b4b; margin-bottom: 15px; border-left: 3px solid #ddd; font-style: italic; }}
+        .status {{ font-size: 11px; color: #65676b; margin-bottom: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }}
+        
+        /* 文本溢出防护 */
+        h3 {{ margin: 0 0 10px 0; font-size: 17px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }}
+        .thought {{ background: #f8f9fa; padding: 12px; font-size: 13px; color: #4b4b4b; margin-bottom: 15px; border-left: 3px solid #ddd; font-style: italic; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; transition: max-height 0.3s; }}
+        .card:hover .thought, .card:hover h3 {{ -webkit-line-clamp: unset; overflow: visible; }}
+        
         .details {{ margin-bottom: 15px; flex-grow: 1; }}
         .details p {{ margin: 5px 0; font-size: 12px; color: #666; line-height: 1.5; }}
         
@@ -129,16 +168,23 @@ def run():
         .btn {{ flex: 1; text-align: center; padding: 10px 0; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600; transition: 0.2s; }}
         .btn:hover {{ opacity: 0.8; }}
         .btn-primary {{ background: #000; color: white; border: 1px solid #000; }}
-        .btn-outline {{ background: white; color: #000; border: 1px solid #ddd; }}
+        .btn-outline {{ background: white; color: #000; border: 1px solid #e4e6eb; }}
     </style>
 </head>
 <body>
     <h1>My Threads Collection</h1>
     
-    <div class="filters">
+    <div class="dashboard">
+        {dashboard_html}
+    </div>
+    
+    <div class="controls-panel">
+        <div class="search-wrapper">
+            <input type="text" id="searchInput" class="search-input" placeholder="输入关键字，实时检索标题、感想或备注内容..." oninput="applyAllFilters()">
+        </div>
         <div class="filter-group">
-            <strong>复原全部：</strong>
-            <button onclick="resetFilters()">显示所有</button>
+            <strong>功能控制：</strong>
+            <button class="reset-btn" onclick="resetFilters()">重置所有过滤</button>
         </div>
         <div class="filter-group">
             <strong>内容载体：</strong>
@@ -155,20 +201,66 @@ def run():
     </div>
 
     <script>
-        function filterCards(type, value) {{
+        // 核心多功能混合过滤引擎
+        let activeCarrier = null;
+        let activeDomain = null;
+
+        function toggleFilter(btn, type, value) {{
+            const siblings = btn.parentNode.querySelectorAll('button');
+            
+            if (type === 'carrier') {{
+                if (activeCarrier === value) {{
+                    activeCarrier = null;
+                    btn.classList.remove('active');
+                }} else {{
+                    siblings.forEach(s => s.classList.remove('active'));
+                    activeCarrier = value;
+                    btn.classList.add('active');
+                }}
+            }} else if (type === 'domain') {{
+                if (activeDomain === value) {{
+                    activeDomain = null;
+                    btn.classList.remove('active');
+                }} else {{
+                    siblings.forEach(s => s.classList.remove('active'));
+                    activeDomain = value;
+                    btn.classList.add('active');
+                }}
+            }}
+            applyAllFilters();
+        }}
+
+        function resetFilters() {{
+            activeCarrier = null;
+            activeDomain = null;
+            document.getElementById('searchInput').value = '';
+            document.querySelectorAll('.controls-panel button').forEach(b => b.classList.remove('active'));
+            applyAllFilters();
+        }}
+
+        function applyAllFilters() {{
+            const searchTxt = document.getElementById('searchInput').value.toLowerCase();
             const cards = document.querySelectorAll('.card');
+            
             cards.forEach(card => {{
-                if (card.getAttribute('data-' + type) === value) {{
+                const cVal = card.getAttribute('data-carrier');
+                const dVal = card.getAttribute('data-domain');
+                
+                const titleTxt = card.querySelector('.card-title').innerText.toLowerCase();
+                const thoughtTxt = card.querySelector('.thought').innerText.toLowerCase();
+                const remarkEl = card.querySelector('.card-remark');
+                const remarkTxt = remarkEl ? remarkEl.innerText.toLowerCase() : '';
+                
+                const matchCarrier = !activeCarrier || cVal === activeCarrier;
+                const matchDomain = !activeDomain || dVal === activeDomain;
+                const matchSearch = !searchTxt || titleTxt.includes(searchTxt) || thoughtTxt.includes(searchTxt) || remarkTxt.includes(searchTxt);
+                
+                if (matchCarrier && matchDomain && matchSearch) {{
                     card.style.display = 'flex';
                 }} else {{
                     card.style.display = 'none';
                 }}
             }});
-        }}
-
-        function resetFilters() {{
-            const cards = document.querySelectorAll('.card');
-            cards.forEach(card => card.style.display = 'flex');
         }}
     </script>
 </body>
