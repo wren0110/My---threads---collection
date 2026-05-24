@@ -61,12 +61,12 @@
     <div class="dashboard">
         
         <div class="stat-card total" onclick="toggleStatusFilter(this, null)" style="cursor: pointer;">
-            <span class="stat-num">22</span>
+            <span class="stat-num">23</span>
             <span class="stat-label">总灵感数</span>
         </div>
         
             <div class="stat-card" data-status-btn="待处理" onclick="toggleStatusFilter(this, '待处理')" style="cursor: pointer;">
-                <span class="stat-num">16</span>
+                <span class="stat-num">17</span>
                 <span class="stat-label">待处理</span>
             </div>
             
@@ -97,16 +97,37 @@
         </div>
         <div class="filter-group">
             <strong>内容载体：</strong>
-            <button class="filter-btn" onclick="toggleFilter(this, 'carrier', '数字工具/网站')">数字工具/网站</button><button class="filter-btn" onclick="toggleFilter(this, 'carrier', '观念/方法论')">观念/方法论</button><button class="filter-btn" onclick="toggleFilter(this, 'carrier', '地点/店铺')">地点/店铺</button><button class="filter-btn" onclick="toggleFilter(this, 'carrier', '实体好物')">实体好物</button><button class="filter-btn" onclick="toggleFilter(this, 'carrier', '实体好物, 地点/店铺')">实体好物, 地点/店铺</button><button class="filter-btn" onclick="toggleFilter(this, 'carrier', '书影音')">书影音</button>
+            <button class="filter-btn" onclick="toggleFilter(this, 'carrier', '数字工具/网站')">数字工具/网站</button><button class="filter-btn" onclick="toggleFilter(this, 'carrier', '地点/店铺')">地点/店铺</button><button class="filter-btn" onclick="toggleFilter(this, 'carrier', '观念/方法论')">观念/方法论</button><button class="filter-btn" onclick="toggleFilter(this, 'carrier', '实体好物, 地点/店铺')">实体好物, 地点/店铺</button><button class="filter-btn" onclick="toggleFilter(this, 'carrier', '实体好物')">实体好物</button><button class="filter-btn" onclick="toggleFilter(this, 'carrier', '书影音')">书影音</button>
         </div>
         <div class="filter-group">
             <strong>应用场景：</strong>
-            <button class="filter-btn" onclick="toggleFilter(this, 'domain', '吃喝玩乐')">吃喝玩乐</button><button class="filter-btn" onclick="toggleFilter(this, 'domain', '生活妙招, 好物分享')">生活妙招, 好物分享</button><button class="filter-btn" onclick="toggleFilter(this, 'domain', '个人成长/技能提升')">个人成长/技能提升</button><button class="filter-btn" onclick="toggleFilter(this, 'domain', '好物分享')">好物分享</button><button class="filter-btn" onclick="toggleFilter(this, 'domain', '生活妙招')">生活妙招</button><button class="filter-btn" onclick="toggleFilter(this, 'domain', '精神马杀鸡')">精神马杀鸡</button>
+            <button class="filter-btn" onclick="toggleFilter(this, 'domain', '吃喝玩乐')">吃喝玩乐</button><button class="filter-btn" onclick="toggleFilter(this, 'domain', '生活妙招')">生活妙招</button><button class="filter-btn" onclick="toggleFilter(this, 'domain', '个人成长/技能提升')">个人成长/技能提升</button><button class="filter-btn" onclick="toggleFilter(this, 'domain', '生活妙招, 好物分享')">生活妙招, 好物分享</button><button class="filter-btn" onclick="toggleFilter(this, 'domain', '精神马杀鸡')">精神马杀鸡</button><button class="filter-btn" onclick="toggleFilter(this, 'domain', '个人成长/技能提升, 精神马杀鸡')">个人成长/技能提升, 精神马杀鸡</button><button class="filter-btn" onclick="toggleFilter(this, 'domain', '好物分享')">好物分享</button>
         </div>
     </div>
 
     <div class="grid" id="cardContainer">
         
+            <div class="card" data-carrier="观念/方法论" data-domain="个人成长/技能提升, 精神马杀鸡" data-status="待处理">
+                
+                <div class="content">
+                    <div class="tags-row">
+                        <span class="tag carrier-tag">观念/方法论</span>
+                        <span class="tag domain-tag">个人成长/技能提升, 精神马杀鸡</span>
+                    </div>
+                    <div class="status">状态：待处理</div>
+                    <h3 class="card-title">闵熙珍Q&A</h3>
+                    <div class="thought">“闵熙珍的问答内容揭示了她的创意理念与行业洞察。”</div>
+                    <div class="details">
+                        
+                        <p class="card-remark">📝 闵熙珍的问答内容揭示了她的创意理念与行业洞察。</p>
+                    </div>
+                    <div class="action-buttons">
+                        
+                        <a href="https://www.threads.com/@rayyyyy0.0/post/DYQCdglk8G_?xmt=AQG0n_s4vcLitKyeFc14nQzdPl-0i5VKtSBk8lZZtmo4xw" target="_blank" class="btn btn-outline">Threads 原帖</a>
+                    </div>
+                </div>
+            </div>
+            
             <div class="card" data-carrier="数字工具/网站" data-domain="个人成长/技能提升" data-status="待处理">
                 
                 <div class="content">
